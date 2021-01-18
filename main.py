@@ -10,25 +10,42 @@ def deal(deck, deal_event):
         card.animating = True
         pygame.time.set_timer(deal_event, 50, True)
 
-def get_cascade_pos(cards, col):
-    bottom_card = [c for c in cards if c.col == col][-1]
+def get_cascade_pos(cards, target, cells, foundations):
+    if target in foundations or target in cells:
+        return (target.x, target.y)
+    bottom_card = [c for c in cards if c.col == target.col][-1]
     return (bottom_card.x, bottom_card.y + 18)
 
-def get_selected_card(event, cards):
+def get_move_target(event, cards, cells, foundations):
     cards_under_cursor = [c for c in cards if c.rect.collidepoint(event.pos)]
     cards_under_cursor = sorted(cards_under_cursor, key=lambda c: c.y, reverse=True)
     if cards_under_cursor:
         return cards_under_cursor[0]
-    else:
-        return None
+    cells_under_cursor = [c for c in cells if c.rect.collidepoint(event.pos)]
+    if cells_under_cursor:
+        return cells_under_cursor[0]
+    foundations_under_cursor = [c for c in foundations if c.rect.collidepoint(event.pos)]
+    if foundations_under_cursor:
+        return foundations_under_cursor[0]
+    return None
 
 def is_draggable(card, cards):
-    # Bottom card in tableu
-    if card == [c for c in cards if c.col == card.col][-1]:
+    if card.on_cell or card.on_foundation:
+        print('Valid card drag (on cell or foundation)')
         return True
-    # Non-bottom card, but all below are in a tableu
-    stack = [c for c in cards if c.col == card.col and c.y >= card.y]
-    return bool(is_tableau(stack))
+    # Bottom card in cascade
+    if card == [c for c in cards if c.col == card.col][-1]:
+        print('Valid card drag (bottom of cascade)')
+        return True
+    # Non-bottom card, but all below are in a tableau
+    cards_below = len([c for c in cards if c.col == card.col and c.y > card.y])
+    # return bool(len(card.tableau) == cards_below)
+    if len(card.tableau) == cards_below:
+        print('Valid card drag (root of bottom tableau)')
+        return True
+    else:
+        print(f'Invalid card drag ({len(card.tableau)} cards in tableau; {cards_below} cards below target: {", ".join([c2.label for c2 in [c for c in cards if c.col == card.col and c.y > card.y]])})')
+        return False
 
 def is_tableau(stack):
     for i in range(1, len(stack)):
@@ -40,30 +57,61 @@ def is_tableau(stack):
             return False
     return True
 
-def is_valid_move(card, target, col, cards):
-    # Own column
-    if card.col == col:
-        print('Invalid move (card moved to own cascade)')
+def is_valid_move(card, target, cards, cells, foundations):
+    if target in foundations:
+        if card.value == target.value + 1 and card.suit == target.suit:
+            if card.tableau:
+                print('Invalid move of tableau to foundation')
+                return False
+            # Valid move to foundation
+            return True
+        else:
+            print('Invalid move to empty foundation')
+            return False
+    if target in cells:
+        if card.tableau:
+            print('Invalid move of tableau to cell')
+            return False
+        # Valid move to free cell
+        return True
+    if target.on_cell:
+        print('Invalid move to card on cell')
         return False
-    col_card = [c for c in cards if c.col == col][-1]
+    if target.on_foundation:
+        if card.tableau:
+            print('Invalid move of tableau to card on foundation')
+            return False
+        # Set target to highest value card on foundation
+        foundation_target = sorted([c for c in cards if c.on_foundation and c.suit == target.suit], key=lambda c: c.value, reverse=True)[0]
+        if card.value == foundation_target.value + 1 and card.suit == foundation_target.suit:
+            # Valid move to card on foundation
+            return True
+        else:
+            print(f'Invalid move to card on foundation: card {card.label} has value "{card.value}", suit "{card.suit}"; target {foundation_target.label} has value "{foundation_target.value}", suit "{foundation_target.suit}"')
+            return False
+    # Own column
+    if card.col == target.col:
+        print('Invalid move to own cascade')
+        return False
     # Target not bottom card
+    col_card = [c for c in cards if c.col == target.col][-1]
     if not target == col_card:
-        print('Invalid move (target card is not the bottom of its cascade)')
+        print('Invalid move to card not at the bottom of its cascade')
         return False
     # Same-color card
     if col_card.color == card.color:
-        print('Invalid move (target card is same color)')
+        print('Invalid move to card of same color')
         return False
     # Valid move
     if col_card.value == card.value + 1:
         return True
     else:
-        # Not one higher
-        print('Invalid move (target card is not 1 higher than root)')
+        # Not 1 higher
+        print('Invalid move to card that is not 1 higher')
         return False
 
 def reset_tableaux(cards):
-    print('---New tableaux---')
+    # print('---New tableaux---')
     for card in cards:
         card.tableau = []
         cards_below = [c for c in cards if c.col == card.col and c.target_y > card.target_y]
@@ -74,8 +122,8 @@ def reset_tableaux(cards):
                 card.tableau.append(child)
             else:
                 break
-    for card in [c for c in cards if c.tableau]:
-        print(f'Tableau for {card.label} in cascade {card.col + 1}: {", ".join([c.label for c in card.tableau])}')
+    # for card in [c for c in cards if c.tableau]:
+    #     print(f'Tableau for {card.label} in cascade {card.col + 1}: {", ".join([c.label for c in card.tableau])}')
 
 def set_card_positions(deck, x_pos):
     col = 0
@@ -113,8 +161,9 @@ def main():
     board_bmp.set_colorkey(c_transparent)
     background.blit(board_bmp, (0, 0))
 
+    suits = ('spades', 'clubs', 'diamonds', 'hearts')
     cells = [Cell('cell', x, c_transparent) for x in range(4)]
-    foundations = [Cell('foundation', x, c_transparent) for x in range(4)]
+    foundations = [Cell('foundation', x, c_transparent, suits[x]) for x in range(4)]
     card_size = (58, 34)
     x_col_positions = [77 + x * (card_size[0] + 3) for x in range(8)]
     undo_pos = (0, 0)
@@ -124,7 +173,7 @@ def main():
 
     cards = []
     for val in range(1, 14):
-        for suit in ('spades', 'clubs', 'diamonds', 'hearts'):
+        for suit in suits:
             cards.append(
                 Card(transparent=c_transparent, value=val, suit=suit))
     random.shuffle(cards)
@@ -147,7 +196,9 @@ def main():
                 if event.button == 1:
                     click = True
                     mouse_down_pos = event.pos
-                    card = get_selected_card(event, cards)
+                    card = get_move_target(event, cards, cells, foundations)
+                    if card.col:
+                        print(f'Mouse down on {card.label} in cascade #{card.col + 1} (col={card.col})')
                     if card:
                         if is_draggable(card, cards):
                             undo_pos = (card.x, card.y)
@@ -159,23 +210,45 @@ def main():
                             cards.append(cards.pop(cards.index(card)))
                             for tab_card in card.tableau:
                                 cards.append(cards.pop(cards.index(tab_card)))
+                        else:
+                            print('Card is not draggable')
             elif event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
                     if event.pos == mouse_down_pos and click:
                         pass # TODO: Add automove
                     else:
-                        target = get_selected_card(
-                            event, [c for c in cards if not c.dragging])
+                        target = get_move_target(
+                            event, [c for c in cards if not c.dragging], cells, foundations)
                         if target and [c for c in cards if c.dragging]:
-                            col = target.col
-                            if is_valid_move(root_card, target, col, cards):
-                                root_card.move(get_cascade_pos(cards, col), col)
+                            if is_valid_move(root_card, target, cards, cells, foundations):
+                                # Non-card targets
+                                if target in foundations:
+                                    root_card.move((target.x, target.y))
+                                    root_card.on_cell = False
+                                    root_card.on_foundation = True
+                                    root_card.col = None
+                                elif target in cells:
+                                    root_card.move((target.x, target.y))
+                                    root_card.on_cell = True
+                                    root_card.on_foundation = False
+                                    root_card.col = None
+                                # Card targets
+                                elif target.on_foundation:
+                                    root_card.move((target.x, target.y))
+                                    root_card.on_cell = False
+                                    root_card.on_foundation = True
+                                    root_card.col = None
+                                else:
+                                    root_card.on_cell = False
+                                    root_card.on_foundation = False
+                                    root_card.move(get_cascade_pos(cards, target, cells, foundations), target.col)
                             else:
                                 # Undo move
                                 root_card.move(undo_pos)
                         else:
                             try:
                                 # Undo move
+                                print('Undoing move: no target')
                                 root_card.move(undo_pos)
                             except IndexError:
                                 pass # Wasn't dragging anything

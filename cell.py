@@ -1,14 +1,18 @@
 import pygame
 
 class Cell(object):
-    def __init__(self, cell_type, pos, transparent):
+    def __init__(self, cell_type, pos, transparent, suit=None):
         super(Cell, self).__init__()
         self.cell_type = cell_type
         self.dims = (58, 34)
         self.pos = pos
+        self.suit = suit
         self.surf = pygame.Surface(self.dims)
+        self.value = 0
         self.x = 16 if cell_type == 'cell' else 566
         self.y = 44 + pos * (self.dims[1] + 4)
+
+        self.rect = self.surf.get_rect(topleft=(self.x, self.y))
 
         if cell_type == 'cell':
             self.surf.blit(pygame.image.load('empty_cell.bmp'), (0, 0))

@@ -11,6 +11,8 @@ class Card(object):
         self.drag_offset = (0, 0)
         self.dragging = False
         self.face_up = False
+        self.on_cell = False
+        self.on_foundation = False
         self.pile_pos = 0
         self.rect = None
         self.suit = suit
@@ -57,19 +59,23 @@ class Card(object):
         self.target_x = self.x
         self.target_y = self.y
         self.rect = self.surf.get_rect(topleft=(self.target_x, self.target_y))
-        if col:
+        if not col == None: # Differentiate between 0 and None
             self.col = col
-            self.move_tableau(col)
-        else:
-            self.move_tableau()
+            print(f'{self.label}: col={self.col}')
+        self.move_tableau(col)
 
     def move_tableau(self, col=None):
         for i in range(len(self.tableau)):
             card = self.tableau[i]
             card.x = self.x
             card.y = self.y + 18 + i * 18
-            if col:
+            card.target_x = card.x
+            card.target_y = card.y
+            card.rect = card.surf.get_rect(topleft=(card.target_x, card.target_y))
+
+            if not col == None: # Differentiate between 0 and None
                 card.col = col
+                print(f'{card.label}: col={card.col}')
 
     def set_label(self):
         value = [0, 'A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K'][self.value]
