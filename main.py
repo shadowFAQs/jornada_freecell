@@ -43,23 +43,39 @@ def is_tableau(stack):
 def is_valid_move(card, target, col, cards):
     # Own column
     if card.col == col:
+        print('Invalid move (card moved to own cascade)')
         return False
     col_card = [c for c in cards if c.col == col][-1]
     # Target not bottom card
     if not target == col_card:
+        print('Invalid move (target card is not the bottom of its cascade)')
         return False
     # Same-color card
     if col_card.color == card.color:
+        print('Invalid move (target card is same color)')
         return False
     # Valid move
     if col_card.value == card.value + 1:
         return True
     else:
         # Not one higher
+        print('Invalid move (target card is not 1 higher than root)')
         return False
 
 def reset_tableaux(cards):
-    pass # TODO: update this after every move (and on initial deal)
+    print('---New tableaux---')
+    for card in cards:
+        card.tableau = []
+        cards_below = [c for c in cards if c.col == card.col and c.target_y > card.target_y]
+        for n in range(len(cards_below)):
+            child = cards_below[n]
+            parent = cards_below[n - 1] if n else card
+            if child.value == parent.value - 1 and not child.color == parent.color:
+                card.tableau.append(child)
+            else:
+                break
+    for card in [c for c in cards if c.tableau]:
+        print(f'Tableau for {card.label} in cascade {card.col + 1}: {", ".join([c.label for c in card.tableau])}')
 
 def set_card_positions(deck, x_pos):
     col = 0
@@ -114,6 +130,7 @@ def main():
     random.shuffle(cards)
     set_card_positions(cards, x_col_positions)
     deal(cards, deal_event)
+    reset_tableaux(cards)
 
     is_running = True
 
@@ -136,7 +153,6 @@ def main():
                             undo_pos = (card.x, card.y)
                             card.dragging = True
                             root_card = card
-                            print('root_card set')
                             card.drag_offset = (
                                 event.pos[0] - card.x, event.pos[1] - card.y)
                             # Move card(s) to end of list to be blitted last
@@ -152,12 +168,10 @@ def main():
                             event, [c for c in cards if not c.dragging])
                         if target and [c for c in cards if c.dragging]:
                             col = target.col
-                            if is_valid_move(card, target, col, cards):
-                                card.move(get_cascade_pos(cards, col), col)
-                                target.tableau.append(card)
+                            if is_valid_move(root_card, target, col, cards):
+                                root_card.move(get_cascade_pos(cards, col), col)
                             else:
                                 # Undo move
-                                print(f'Invalid move. Moving {root_card.label} back to {undo_pos}')
                                 root_card.move(undo_pos)
                         else:
                             try:
