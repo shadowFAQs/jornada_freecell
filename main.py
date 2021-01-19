@@ -37,6 +37,13 @@ def get_move_target(event, cards, cells, foundations, bases):
         return bases_under_cursor[0]
     return None
 
+def get_max_draggable_tableau(cards):
+    empty_cols = 0
+    for n in range(8):
+        if not [c for c in cards if c.col == n]:
+            empty_cols += 1
+    return 5 - len([c for c in cards if c.on_cell]) * (1 + empty_cols)
+
 def is_draggable(card, cards):
     if not card in cards:
         print('Invalid drag (not a card)')
@@ -52,8 +59,12 @@ def is_draggable(card, cards):
     cards_below = len([c for c in cards if c.col == card.col and c.y > card.y])
     # return bool(len(card.tableau) == cards_below)
     if len(card.tableau) == cards_below:
-        print('Valid card drag (root of bottom tableau)')
-        return True
+        if len(card.tableau) + 1 <= get_max_draggable_tableau(cards):
+            print('Valid card drag (root of bottom tableau)')
+            return True
+        else:
+            print(f'Invalid card drag (tableau size: {len(card.tableau) + 1}; only {get_max_draggable_tableau(cards)} can be moved)')
+            return False
     else:
         print(f'Invalid card drag ({len(card.tableau)} cards in tableau; {cards_below} cards below target: {", ".join([c2.label for c2 in [c for c in cards if c.col == card.col and c.y > card.y]])})')
         return False
