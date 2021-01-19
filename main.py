@@ -16,10 +16,15 @@ def get_cascade_pos(cards, target, cells, foundations):
     bottom_card = [c for c in cards if c.col == target.col][-1]
     return (bottom_card.x, bottom_card.y + 18)
 
-def get_move_target(event, cards, cells, foundations):
+def get_move_target(event, cards, cells, foundations, bases):
     cards_under_cursor = [c for c in cards if c.rect.collidepoint(event.pos)]
-    cards_under_cursor = sorted(cards_under_cursor, key=lambda c: c.y, reverse=True)
     if cards_under_cursor:
+        if cards_under_cursor[0].on_foundation:
+            # Sort foundation cards by value; take highest
+            cards_under_cursor = sorted(cards_under_cursor, key=lambda c: c.value, reverse=True)
+        else:
+            # Sort non-foundation cards by y position; take highest
+            cards_under_cursor = sorted(cards_under_cursor, key=lambda c: c.y, reverse=True)
         return cards_under_cursor[0]
     cells_under_cursor = [c for c in cells if c.rect.collidepoint(event.pos)]
     if cells_under_cursor:
@@ -27,9 +32,15 @@ def get_move_target(event, cards, cells, foundations):
     foundations_under_cursor = [c for c in foundations if c.rect.collidepoint(event.pos)]
     if foundations_under_cursor:
         return foundations_under_cursor[0]
+    bases_under_cursor = [c for c in bases if c.rect.collidepoint(event.pos)]
+    if bases_under_cursor:
+        return bases_under_cursor[0]
     return None
 
 def is_draggable(card, cards):
+    if not card in cards:
+        print('Invalid drag (not a card)')
+        return False
     if card.on_cell or card.on_foundation:
         print('Valid card drag (on cell or foundation)')
         return True
@@ -57,7 +68,7 @@ def is_tableau(stack):
             return False
     return True
 
-def is_valid_move(card, target, cards, cells, foundations):
+def is_valid_move(card, target, cards, cells, foundations, bases):
     if target in foundations:
         if card.value == target.value + 1 and card.suit == target.suit:
             if card.tableau:
@@ -73,6 +84,9 @@ def is_valid_move(card, target, cards, cells, foundations):
             print('Invalid move of tableau to cell')
             return False
         # Valid move to free cell
+        return True
+    if target in bases:
+        print('Valid move to cascade base')
         return True
     if target.on_cell:
         print('Invalid move to card on cell')
@@ -114,7 +128,7 @@ def reset_tableaux(cards):
     # print('---New tableaux---')
     for card in cards:
         card.tableau = []
-        cards_below = [c for c in cards if c.col == card.col and c.target_y > card.target_y]
+        cards_below = [c for c in cards if c.col == card.col and c.target_y > card.target_y and not c.on_foundation and not c.on_cell]
         for n in range(len(cards_below)):
             child = cards_below[n]
             parent = cards_below[n - 1] if n else card
@@ -166,6 +180,7 @@ def main():
     foundations = [Cell('foundation', x, c_transparent, suits[x]) for x in range(4)]
     card_size = (58, 34)
     x_col_positions = [77 + x * (card_size[0] + 3) for x in range(8)]
+    bases = [Cell('base', x_col_positions[x], c_transparent, col=x) for x in range(8)]
     undo_pos = (0, 0)
     mouse_down_pos = (0, 0)
     click = True
@@ -196,10 +211,11 @@ def main():
                 if event.button == 1:
                     click = True
                     mouse_down_pos = event.pos
-                    card = get_move_target(event, cards, cells, foundations)
-                    if card.col:
-                        print(f'Mouse down on {card.label} in cascade #{card.col + 1} (col={card.col})')
+                    root_card = None
+                    card = get_move_target(event, cards, cells, foundations, bases)
                     if card:
+                        if card.col:
+                            print(f'Mouse down on {card.label} in cascade #{card.col + 1} (col={card.col})')
                         if is_draggable(card, cards):
                             undo_pos = (card.x, card.y)
                             card.dragging = True
@@ -218,9 +234,9 @@ def main():
                         pass # TODO: Add automove
                     else:
                         target = get_move_target(
-                            event, [c for c in cards if not c.dragging], cells, foundations)
+                            event, [c for c in cards if not c.dragging], cells, foundations, bases)
                         if target and [c for c in cards if c.dragging]:
-                            if is_valid_move(root_card, target, cards, cells, foundations):
+                            if is_valid_move(root_card, target, cards, cells, foundations, bases):
                                 # Non-card targets
                                 if target in foundations:
                                     root_card.move((target.x, target.y))
@@ -232,6 +248,10 @@ def main():
                                     root_card.on_cell = True
                                     root_card.on_foundation = False
                                     root_card.col = None
+                                elif target in bases:
+                                    root_card.move((target.x, target.y), target.col)
+                                    root_card.on_cell = False
+                                    root_card.on_foundation = False
                                 # Card targets
                                 elif target.on_foundation:
                                     root_card.move((target.x, target.y))
@@ -248,9 +268,10 @@ def main():
                         else:
                             try:
                                 # Undo move
-                                print('Undoing move: no target')
                                 root_card.move(undo_pos)
-                            except IndexError:
+                                print('Undid move due to no target')
+                            except AttributeError:
+                                print('No move to undo')
                                 pass # Wasn't dragging anything
                         cards = set_z_indexes(cards) # Reset draw order
                     for card in [c for c in cards if c.dragging]:
@@ -261,6 +282,8 @@ def main():
 
         window_surface.blit(background, (0, 0))
         window_surface.blit(board_bmp, (0, 0))
+        for base in bases:
+            window_surface.blit(base.surf, (base.x, base.y))
         for cell in cells + foundations:
             window_surface.blit(cell.surf, (cell.x, cell.y))
         for card in cards:
