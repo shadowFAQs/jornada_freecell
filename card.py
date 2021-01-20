@@ -73,7 +73,7 @@ class Card(object):
             self.on_cell = False
             self.move_tableau(col)
 
-    def move_tableau(self, col=None):
+    def move_tableau(self, col=None, drag=False):
         for i in range(len(self.tableau)):
             card = self.tableau[i]
             card.x = self.x
@@ -82,8 +82,9 @@ class Card(object):
             card.target_y = card.y
             card.rect = card.surf.get_rect(topleft=(card.target_x, card.target_y))
 
-            card.col = col
-            print(f'Tableau card {card.label}: col={card.col}')
+            if not drag:
+                card.col = col
+                print(f'Tableau card {card.label}: col={card.col}')
 
     def set_label(self):
         value = [0, 'A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K'][self.value]
@@ -114,4 +115,4 @@ class Card(object):
         elif self.dragging:
             self.x = mouse_pos[0] - self.drag_offset[0]
             self.y = mouse_pos[1] - self.drag_offset[1]
-            self.move_tableau()
+            self.move_tableau(drag=True)
