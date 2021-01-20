@@ -20,6 +20,7 @@ class Cell(object):
         self.rect = self.surf.get_rect(topleft=(self.x, self.y))
 
         if cell_type == 'cell':
+            self.vacant = True
             self.surf.blit(pygame.image.load('empty_cell.bmp'), (0, 0))
             self.surf.set_colorkey(transparent)
         elif cell_type == 'foundation':

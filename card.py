@@ -53,16 +53,25 @@ class Card(object):
         self.surf.blit(self.surf_suit, (26, 2))
         self.surf.set_colorkey(self.c_transparent)
 
-    def move(self, pos, col=None):
+    def move(self, pos, col=None, to_foundation=False, to_cell=False):
         self.x = pos[0]
         self.y = pos[1]
         self.target_x = self.x
         self.target_y = self.y
         self.rect = self.surf.get_rect(topleft=(self.target_x, self.target_y))
-        if not col == None: # Differentiate between 0 and None
-            self.col = col
-            print(f'{self.label}: col={self.col}')
-        self.move_tableau(col)
+        self.col = col
+        print(f'{self.label}: col={self.col}')
+
+        if to_foundation:
+            self.on_foundation = True
+            self.on_cell = False
+        elif to_cell:
+            self.on_foundation = False
+            self.on_cell = True
+        else:
+            self.on_foundation = False
+            self.on_cell = False
+            self.move_tableau(col)
 
     def move_tableau(self, col=None):
         for i in range(len(self.tableau)):
@@ -73,9 +82,8 @@ class Card(object):
             card.target_y = card.y
             card.rect = card.surf.get_rect(topleft=(card.target_x, card.target_y))
 
-            if not col == None: # Differentiate between 0 and None
-                card.col = col
-                print(f'{card.label}: col={card.col}')
+            card.col = col
+            print(f'Tableau card {card.label}: col={card.col}')
 
     def set_label(self):
         value = [0, 'A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K'][self.value]
