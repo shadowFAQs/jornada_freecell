@@ -94,17 +94,12 @@ def get_move_target(event, cards, cells, foundations, bases):
         return bases_under_cursor[0]
     return None
 
-def get_max_draggable_tableau(cards):
+def get_max_draggable_tableau(cards, to_base = 0):
     empty_cols = 0
     for n in range(8):
         if not [c for c in cards if c.col == n]:
             empty_cols += 1
-    return (5 - len([c for c in cards if c.on_cell])) * max(empty_cols, 1)
-    # TODO: This logic actually changes depending on the target...
-    # If an empty base is the target, its mult. bonus doesn't get added here.
-    # That is, it should still be added for start_drag, but somehow we need to
-    # mark that the base is not a valid target for end_drag if the tableau in
-    # question has too many cards.
+    return (5 - len([c for c in cards if c.on_cell])) * (empty_cols - to_base + 1)
 
 def is_draggable(card, cards):
     if not card in cards:
@@ -159,8 +154,16 @@ def is_valid_move(card, target, cards, cells, foundations, bases):
         # Valid move to free cell
         return True
     if target in bases:
-        print('Valid move to cascade base')
-        return True
+        if card.tableau:
+            if len(card.tableau) + 1 > get_max_draggable_tableau(cards, to_base=1):
+                print('Invalid move of tableau to cascade base (too many cards in tableau)')
+                return False
+            else:
+                print('Valid move to cascade base')
+                return True
+        else:
+            print('Valid move to cascade base')
+            return True
     if target.on_cell:
         print('Invalid move to card on cell')
         return False
@@ -293,7 +296,7 @@ def main():
                     root_card = None
                     card = get_move_target(event, cards, cells, foundations, bases)
                     if card:
-                        if card.col:
+                        if card in cards:
                             print(f'Mouse down on {card.label} in cascade #{card.col + 1} (col={card.col})')
                         if is_draggable(card, cards):
                             undo_pos = (card.x, card.y)
