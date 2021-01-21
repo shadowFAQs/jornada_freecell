@@ -22,7 +22,6 @@ def automove(card, cards, cells, foundations, bases):
         # Card to valid cascade
         if make_valid_move(card, cards, bases):
             print(f'Automove: {card.label} -> valid cascade card or empty base')
-            # Move to valid card on bottom of cascade
             return
         else:
             # Move to free cell
@@ -31,7 +30,11 @@ def automove(card, cards, cells, foundations, bases):
             card.move((cell.x, cell.y), to_cell=True)
             return
     else:
-        pass # Move with tableau
+        if make_valid_move(card, cards, bases):
+            print(f'Automove: {card.label} + tableau -> valid cascade card or empty base')
+            return
+        else:
+            print('Automove: No valid targets')
 
 def deal(deck, deal_event):
     card = [c for c in deck if not c.animating and not (c.x, c.y) == (c.target_x, c.target_y)]
@@ -53,16 +56,16 @@ def make_valid_move(card, cards, bases):
             # No cards in column; add base instead
             possible_moves.append([b for b in bases if b.col == col][0])
     print(f'make_valid_move(): {card.label} ? {", ".join([c.label if c in cards  else "[base]" for c in possible_moves])}')
-    for target in possible_moves:
-        if target in bases:
-            print(f'make_valid_move(): {card.label} -> cascade base (col={base.col})')
-            return True
+    for target in [t for t in possible_moves if t not in bases]:
         if not target.color == card.color and target.value == card.value + 1:
             print(f'make_valid_move(): {card.label} -> {target.label}, col={target.col}')
             card.move(get_cascade_pos(cards, target), target.col)
-            print('make_valid_move(): Returning True')
             return True
-    print('make_valid_move(): Returning False')
+    for target in [t for t in possible_moves if t in bases]:
+        print(f'make_valid_move(): {card.label} -> cascade base (col={target.col})')
+        card.move((target.x, target.y), target.col)
+        return True
+    print('make_valid_move(): No valid move to make')
     return False
 
 def get_cascade_pos(cards, target):
@@ -71,6 +74,7 @@ def get_cascade_pos(cards, target):
 
 def get_move_target(event, cards, cells, foundations, bases):
     cards_under_cursor = [c for c in cards if c.rect.collidepoint(event.pos)]
+    print(f'Cards under cursor: {", ".join([c.label for c in cards_under_cursor])}')
     if cards_under_cursor:
         if cards_under_cursor[0].on_foundation:
             # Sort foundation cards by value; take highest
@@ -95,7 +99,12 @@ def get_max_draggable_tableau(cards):
     for n in range(8):
         if not [c for c in cards if c.col == n]:
             empty_cols += 1
-    return (5 - len([c for c in cards if c.on_cell])) * (1 + empty_cols)
+    return (5 - len([c for c in cards if c.on_cell])) * max(empty_cols, 1)
+    # TODO: This logic actually changes depending on the target...
+    # If an empty base is the target, its mult. bonus doesn't get added here.
+    # That is, it should still be added for start_drag, but somehow we need to
+    # mark that the base is not a valid target for end_drag if the tableau in
+    # question has too many cards.
 
 def is_draggable(card, cards):
     if not card in cards:
@@ -298,13 +307,11 @@ def main():
                                 cards.append(cards.pop(cards.index(tab_card)))
                         else:
                             print('Card is not draggable')
+                            root_card = None
             elif event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
-                    if event.pos == mouse_down_pos and click:
-                        if is_draggable(card, cards):
-                            undo_pos = (card.x, card.y)
-                            automove(card, cards, cells, foundations, bases)
-                            root_card = card
+                    if event.pos == mouse_down_pos and click and root_card:
+                        automove(root_card, cards, cells, foundations, bases)
                     else:
                         target = get_move_target(
                             event, [c for c in cards if not c.dragging], cells, foundations, bases)
