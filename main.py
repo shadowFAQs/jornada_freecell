@@ -237,6 +237,11 @@ def set_card_positions(deck, x_pos):
 def set_z_indexes(cards):
     return sorted(cards, key=lambda c: c.y)
 
+def win():
+    global GAME_IN_PROGRESS
+    GAME_IN_PROGRESS = False
+    print('You win!')
+
 def main():
     dims = (640, 240)
     pygame.init()
@@ -256,6 +261,11 @@ def main():
     board_bmp = pygame.image.load('board.bmp')
     board_bmp.set_colorkey(c_transparent)
     background.blit(board_bmp, (0, 0))
+
+    global INPUT_ENABLED
+    global GAME_IN_PROGRESS
+    INPUT_ENABLED = False
+    GAME_IN_PROGRESS = True
 
     suits = ('spades', 'clubs', 'diamonds', 'hearts')
     cells = [Cell('cell', x, c_transparent) for x in range(4)]
@@ -290,65 +300,71 @@ def main():
             elif event.type == deal_event:
                 deal(cards, deal_event)
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    click = True
-                    mouse_down_pos = event.pos
-                    root_card = None
-                    card = get_move_target(event, cards, cells, foundations, bases)
-                    if card:
-                        if card in cards:
-                            print(f'Mouse down on {card.label} in cascade #{card.col + 1} (col={card.col})')
-                        if is_draggable(card, cards):
-                            undo_pos = (card.x, card.y)
-                            card.dragging = True
-                            root_card = card
-                            card.drag_offset = (
-                                event.pos[0] - card.x, event.pos[1] - card.y)
-                            # Move card(s) to end of list to be blitted last
-                            cards.append(cards.pop(cards.index(card)))
-                            for tab_card in card.tableau:
-                                cards.append(cards.pop(cards.index(tab_card)))
-                        else:
-                            print('Card is not draggable')
-                            root_card = None
-            elif event.type == pygame.MOUSEBUTTONUP:
-                if event.button == 1:
-                    if event.pos == mouse_down_pos and click and root_card:
-                        automove(root_card, cards, cells, foundations, bases)
-                    else:
-                        target = get_move_target(
-                            event, [c for c in cards if not c.dragging], cells, foundations, bases)
-                        if target and [c for c in cards if c.dragging]:
-                            if is_valid_move(root_card, target, cards, cells, foundations, bases):
-                                # Non-card targets
-                                if target in foundations:
-                                    root_card.move((target.x, target.y), to_foundation=True)
-                                elif target in cells:
-                                    root_card.move((target.x, target.y), to_cell=True)
-                                elif target in bases:
-                                    root_card.move((target.x, target.y), target.col)
-                                # Card targets
-                                elif target.on_foundation:
-                                    root_card.move((target.x, target.y), to_foundation=True)
-                                else:
-                                    root_card.move(get_cascade_pos(cards, target), target.col)
+                if INPUT_ENABLED and GAME_IN_PROGRESS:
+                    if event.button == 1:
+                        click = True
+                        mouse_down_pos = event.pos
+                        root_card = None
+                        card = get_move_target(event, cards, cells, foundations, bases)
+                        if card:
+                            if card in cards and not card.col == None:
+                                print(f'Mouse down on {card.label} in cascade #{card.col + 1} (col={card.col})')
+                            if is_draggable(card, cards):
+                                undo_pos = (card.x, card.y)
+                                card.dragging = True
+                                root_card = card
+                                card.drag_offset = (
+                                    event.pos[0] - card.x, event.pos[1] - card.y)
+                                # Move card(s) to end of list to be blitted last
+                                cards.append(cards.pop(cards.index(card)))
+                                for tab_card in card.tableau:
+                                    cards.append(cards.pop(cards.index(tab_card)))
                             else:
-                                # Undo move
-                                root_card.move(undo_pos, card.col)
+                                print('Card is not draggable')
+                                root_card = None
+            elif event.type == pygame.MOUSEBUTTONUP:
+                if INPUT_ENABLED and GAME_IN_PROGRESS:
+                    if event.button == 1:
+                        if event.pos == mouse_down_pos and click and root_card:
+                            automove(root_card, cards, cells, foundations, bases)
                         else:
-                            try:
-                                # Undo move
-                                root_card.move(undo_pos, card.col)
-                                print('Undid move due to no target')
-                            except AttributeError:
-                                print('No move to undo')
-                                pass # Wasn't dragging anything
-                        cards = set_z_indexes(cards) # Reset draw order
-                    for card in [c for c in cards if c.dragging]:
-                        card.dragging = False
-                    reset_tableaux_and_cells(cards, cells)
+                            target = get_move_target(
+                                event, [c for c in cards if not c.dragging], cells, foundations, bases)
+                            if target and [c for c in cards if c.dragging]:
+                                if is_valid_move(root_card, target, cards, cells, foundations, bases):
+                                    # Non-card targets
+                                    if target in foundations:
+                                        root_card.move((target.x, target.y), to_foundation=True)
+                                    elif target in cells:
+                                        root_card.move((target.x, target.y), to_cell=True)
+                                    elif target in bases:
+                                        root_card.move((target.x, target.y), target.col)
+                                    # Card targets
+                                    elif target.on_foundation:
+                                        root_card.move((target.x, target.y), to_foundation=True)
+                                    else:
+                                        root_card.move(get_cascade_pos(cards, target), target.col)
+                                else:
+                                    # Undo move
+                                    root_card.move(undo_pos, card.col)
+                            else:
+                                try:
+                                    # Undo move
+                                    root_card.move(undo_pos, card.col)
+                                    print('Undid move with no target')
+                                except AttributeError:
+                                    print('No move to undo')
+                                    pass # Wasn't dragging anything
+                            cards = set_z_indexes(cards) # Reset draw order
+                        for card in [c for c in cards if c.dragging]:
+                            card.dragging = False
+                        reset_tableaux_and_cells(cards, cells)
+                    # Win condition
+                    if len([c for c in cards if c.on_foundation]) == len(cards):
+                        win()
             elif event.type == pygame.MOUSEMOTION:
-                click = False
+                if INPUT_ENABLED and GAME_IN_PROGRESS:
+                    click = False
 
         window_surface.blit(background, (0, 0))
         window_surface.blit(board_bmp, (0, 0))
@@ -359,7 +375,8 @@ def main():
         for card in cards:
             card.update(pygame.mouse.get_pos())
             window_surface.blit(card.surf, (card.x, card.y))
-
+        # Wait for animation
+        INPUT_ENABLED = not bool(len([c for c in cards if c.animating]))
         pygame.display.update()
 
 if __name__ == '__main__':
