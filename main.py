@@ -76,10 +76,15 @@ def automove(card, cards, cells, foundations, bases):
             return
         else:
             # Move to free cell
-            cell = [c for c in cells if c.vacant][0]
-            print(f'Automove: {card.label} -> cell #{cell.pos}')
-            card.move((cell.x, cell.y), to_cell=True)
-            return
+            free_cells = [c for c in cells if c.vacant]
+            if free_cells:
+                cell = free_cells[0]
+                print(f'Automove: {card.label} -> cell #{cell.pos}')
+                card.move((cell.x, cell.y), to_cell=True)
+                return
+            else:
+                print('Automove: No valid targets')
+                return
     else:
         if make_valid_move(card, cards, bases):
             print(f'Automove: {card.label} + tableau -> valid cascade card or empty base')
