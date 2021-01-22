@@ -3,6 +3,57 @@ import pygame
 from card import Card
 from cell import Cell
 
+def autocomplete(cards, cells, foundations):
+    print('---Begin autocomplete---')
+
+    card_moved = True
+    while card_moved:
+        card_moved = False
+        for suit in ('spades', 'clubs', 'diamonds', 'hearts'):
+            suit_cards = [c for c in cards if c.on_foundation and c.suit == suit]
+            if suit_cards:
+                high_card = sorted(suit_cards, key=lambda c: c.value, reverse=True)[0]
+                print(f'    High card on {suit} foundation: {high_card.label}')
+                target = [c for c in cards if c.suit == suit and c.value == high_card.value + 1][0]
+                print(f'    Target: {target.label}')
+                if target.on_cell:
+                    print('    Target on cell')
+                    target.target_x = high_card.x
+                    target.target_y = high_card.y
+                    target.animating = True
+                    print(f'    {target.label} targeting {suit} foundation on top of {high_card.label}')
+                    card_moved = True
+                    break
+                else:
+                    print('    Target not on cell')
+                    if target.y == max([c.y for c in cards if c.col == target.col]):
+                        target.move((high_card.x, high_card.y), to_foundation=True)
+                        print(f'    {target.label} moved to {suit} foundation on top of {high_card.label}')
+                        card_moved = True
+                        break
+            else:
+                print(f'    No cards on {suit} foundation')
+                target = [c for c in cards if c.suit == suit and c.value == 1][0]
+                print(f'    Target: {target.label} in cascade #{target.col + 1}')
+                foundation = [f for f in foundations if f.suit == suit][0]
+                if target.on_cell:
+                    print('    Target on cell')
+                    target.move((foundation.x, foundation.y), to_foundation=True)
+                    print(f'    {target.label} moved from cell to {suit} foundation base')
+                    card_moved = True
+                    break
+                else:
+                    print('    Target not on cell')
+                    if target.y == max([c.y for c in cards if c.col == target.col]):
+                        target.move((foundation.x, foundation.y), to_foundation=True)
+                        print(f'{target.label} moved to {suit} foundation base')
+                        card_moved = True
+                        break
+                    else:
+                        print(f'    {target.label} is not at the bottom of its cascade')
+
+    print('----End autocomplete----')
+
 def automove(card, cards, cells, foundations, bases):
     # Ace to foundation
     if card.value == 1:
@@ -35,6 +86,9 @@ def automove(card, cards, cells, foundations, bases):
             return
         else:
             print('Automove: No valid targets')
+
+def close_menu():
+    print('Menu closed')
 
 def deal(deck, deal_event):
     card = [c for c in deck if not c.animating and not (c.x, c.y) == (c.target_x, c.target_y)]
@@ -200,6 +254,9 @@ def is_valid_move(card, target, cards, cells, foundations, bases):
         print('Invalid move to card that is not 1 higher')
         return False
 
+def open_menu():
+    print('Menu open')
+
 def reset_tableaux_and_cells(cards, cells):
     # print('---New tableaux---')
     for cell in cells:
@@ -264,8 +321,10 @@ def main():
 
     global INPUT_ENABLED
     global GAME_IN_PROGRESS
+    global PAUSED
     INPUT_ENABLED = False
     GAME_IN_PROGRESS = True
+    PAUSED = False
 
     suits = ('spades', 'clubs', 'diamonds', 'hearts')
     cells = [Cell('cell', x, c_transparent) for x in range(4)]
@@ -365,6 +424,17 @@ def main():
             elif event.type == pygame.MOUSEMOTION:
                 if INPUT_ENABLED and GAME_IN_PROGRESS:
                     click = False
+            elif event.type == pygame.KEYDOWN:
+                if INPUT_ENABLED:
+                    if event.key == pygame.K_SPACE:
+                        if PAUSED:
+                            PAUSED = False
+                            close_menu()
+                        else:
+                            PAUSED = True
+                            open_menu()
+                    elif event.key == pygame.K_s:
+                        autocomplete(cards, cells, foundations)
 
         window_surface.blit(background, (0, 0))
         window_surface.blit(board_bmp, (0, 0))
@@ -381,3 +451,16 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+"""
+TODO
+----
+
+- Menu
+    - Restart
+    - New game
+- Restack cards when cascades too long to fit on screen
+- Start dealing from visible deck of face-down cards
+- Update 'drop' placement of drag-and-drop so cursor doesn't need to be over target card
+
+"""
