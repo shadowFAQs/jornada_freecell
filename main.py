@@ -14,7 +14,11 @@ def autocomplete(cards, cells, foundations):
             if suit_cards:
                 high_card = sorted(suit_cards, key=lambda c: c.value, reverse=True)[0]
                 print(f'    High card on {suit} foundation: {high_card.label}')
-                target = [c for c in cards if c.suit == suit and c.value == high_card.value + 1][0]
+                try:
+                    target = [c for c in cards if c.suit == suit and c.value == high_card.value + 1][0]
+                except IndexError:
+                    print(f'All {suit} already on foundation')
+                    break
                 print(f'    Target: {target.label}')
                 if target.on_cell:
                     print('    Target on cell')
@@ -71,7 +75,7 @@ def automove(card, cards, cells, foundations, bases):
                 card.move((high_card.x, high_card.y), to_foundation=True)
                 return
         # Card to valid cascade
-        if make_valid_move(card, cards, bases):
+        if make_valid_move(card, cards, cells, foundations, bases):
             print(f'Automove: {card.label} -> valid cascade card or empty base')
             return
         else:
@@ -86,7 +90,7 @@ def automove(card, cards, cells, foundations, bases):
                 print('Automove: No valid targets')
                 return
     else:
-        if make_valid_move(card, cards, bases):
+        if make_valid_move(card, cards, cells, foundations, bases):
             print(f'Automove: {card.label} + tableau -> valid cascade card or empty base')
             return
         else:
@@ -102,7 +106,7 @@ def deal(deck, deal_event):
         card.animating = True
         pygame.time.set_timer(deal_event, 50, True)
 
-def make_valid_move(card, cards, bases):
+def make_valid_move(card, cards, cells, foundations, bases):
     print('make_valid_move(): Start')
     possible_moves = []
     for col in range(8):
@@ -121,9 +125,10 @@ def make_valid_move(card, cards, bases):
             card.move(get_cascade_pos(cards, target), target.col)
             return True
     for target in [t for t in possible_moves if t in bases]:
-        print(f'make_valid_move(): {card.label} -> cascade base (col={target.col})')
-        card.move((target.x, target.y), target.col)
-        return True
+        if is_valid_move(card, target, cards, cells, foundations, bases):
+            print(f'make_valid_move(): {card.label} -> cascade base (col={target.col})')
+            card.move((target.x, target.y), target.col)
+            return True
     print('make_valid_move(): No valid move to make')
     return False
 
