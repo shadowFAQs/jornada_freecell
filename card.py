@@ -2,7 +2,7 @@ import math
 import pygame
 
 class Card(object):
-    def __init__(self, transparent, value, suit):
+    def __init__(self, pos, transparent, value, suit):
         super(Card, self).__init__()
         self.animating = False
         self.c_transparent = transparent
@@ -20,11 +20,11 @@ class Card(object):
         self.surf_suit = pygame.Surface((16, 16))
         self.surf_value = pygame.Surface((16, 16))
         self.tableau = []
-        self.target_x = 290
-        self.target_y = 250
+        self.target_x = pos[0]
+        self.target_y = pos[1]
         self.value = value
-        self.x = 290 # Left of card
-        self.y = 250 # Top of card
+        self.x = pos[0] # Left of card
+        self.y = pos[1] # Top of card
 
         self.color = 'black' if suit in ('spades', 'clubs') else 'red'
         self.set_label()

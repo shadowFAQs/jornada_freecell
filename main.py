@@ -105,6 +105,9 @@ def deal(deck, deal_event):
         card = card[0]
         card.animating = True
         pygame.time.set_timer(deal_event, 50, True)
+    else:
+        global DEALING
+        DEALING = False
 
 def make_valid_move(card, cards, cells, foundations, bases):
     print('make_valid_move(): Start')
@@ -327,14 +330,19 @@ def main():
     board = pygame.Surface(dims)
     board_bmp = pygame.image.load('board.bmp')
     board_bmp.set_colorkey(c_transparent)
-    background.blit(board_bmp, (0, 0))
 
     global INPUT_ENABLED
     global GAME_IN_PROGRESS
     global PAUSED
+    global DEALING
     INPUT_ENABLED = False
     GAME_IN_PROGRESS = True
     PAUSED = False
+    DEALING = True
+
+    deck_pos = (291, 190)
+    card_back = pygame.image.load('card_back.bmp')
+    card_back.set_colorkey(c_transparent)
 
     suits = ('spades', 'clubs', 'diamonds', 'hearts')
     cells = [Cell('cell', x, c_transparent) for x in range(4)]
@@ -351,7 +359,7 @@ def main():
     for val in range(1, 14):
         for suit in suits:
             cards.append(
-                Card(transparent=c_transparent, value=val, suit=suit))
+                Card(pos=deck_pos, transparent=c_transparent, value=val, suit=suit))
     random.shuffle(cards)
     set_card_positions(cards, x_col_positions)
     deal(cards, deal_event)
@@ -444,7 +452,8 @@ def main():
                             PAUSED = True
                             open_menu()
                     elif event.key == pygame.K_s:
-                        autocomplete(cards, cells, foundations)
+                        if PAUSED:
+                            autocomplete(cards, cells, foundations)
 
         window_surface.blit(background, (0, 0))
         window_surface.blit(board_bmp, (0, 0))
@@ -455,6 +464,8 @@ def main():
         for card in cards:
             card.update(pygame.mouse.get_pos())
             window_surface.blit(card.surf, (card.x, card.y))
+        if DEALING:
+            window_surface.blit(card_back, deck_pos)
         # Wait for animation
         INPUT_ENABLED = not bool(len([c for c in cards if c.animating]))
         pygame.display.update()
@@ -470,7 +481,8 @@ TODO
     - Restart
     - New game
 - Restack cards when cascades too long to fit on screen
-- Start dealing from visible deck of face-down cards
 - Update 'drop' placement of drag-and-drop so cursor doesn't need to be over target card
+- Controller support
+- Big refactor
 
 """
