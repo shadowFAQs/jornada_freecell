@@ -8,30 +8,28 @@ class Card(object):
         self.animating = False
         self.c_transparent = transparent
         self.col = 0
-        self.dims = (19, 28) # Was (58, 34)
+        self.dims = (19, 28)
         self.face_up = False
         self.on_cell = False
         self.on_foundation = False
         self.pos = pos
         self.suit = suit
         self.surf = pygame.Surface(self.dims)
-        self.surf_suit = pygame.Surface((14, 14))
-        self.surf_value = pygame.Surface((14, 14))
+        self.surf_suit = pygame.Surface((7, 8))
+        self.surf_value = pygame.Surface((8, 8))
         self.tableau = []
         self.target_pos = pos
         self.value = value
 
-        self.color = 'black' if suit in ('spades', 'clubs') else 'red'
-        self.set_label()
+        self.color = 'black' if suit in suits[:2] else 'red'
+        self.set_label() # For debugging
 
         # Graphics
         self.surf_suit.set_colorkey(self.c_transparent)
         self.surf_value.set_colorkey(self.c_transparent)
-        self.bmp_back = pygame.image.load('card_back.bmp')
         self.bmp_front = pygame.image.load('card_front.bmp')
         self.bmp_suits = pygame.image.load('suits.bmp')
-        self.bmp_values_black = pygame.image.load('values_black.bmp')
-        self.bmp_values_red = pygame.image.load('values_red.bmp')
+        self.bmp_values = pygame.image.load('values.bmp')
         self.draw_face()
 
     def animate(self):
@@ -63,16 +61,15 @@ class Card(object):
 
     def draw_face(self):
         suit_index = self.all_suits.index(self.suit)
+        # Draw card front
         self.surf.blit(self.bmp_front, (0, 0))
-        if self.color == 'black':
-            self.surf_value.blit(
-                self.bmp_values_black, (-16 * (self.value - 1), 0))
-        else:
-            self.surf_value.blit(
-                self.bmp_values_red, (-16 * (self.value - 1), 0))
-        self.surf_suit.blit(self.bmp_suits, (-16 * suit_index, 0))
-        self.surf.blit(self.surf_value, (8, 2))
-        self.surf.blit(self.surf_suit, (26, 2))
+        # Draw value (each value sprite is 8px wide)
+        self.surf_value.blit(self.bmp_values, (-8 * (self.value - 1), 0))
+        # Draw suit (each suit is 7px wide)
+        self.surf_suit.blit(self.bmp_suits, (-7 * suit_index, 0))
+        # Blit value and suit to main surface
+        self.surf.blit(self.surf_value, (3, 3))
+        self.surf.blit(self.surf_suit, (10, 3))
         self.surf.set_colorkey(self.c_transparent)
 
     def move(self, pos):
