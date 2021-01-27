@@ -1,222 +1,12 @@
-import math, random
+import math
 import pygame
 from card import Card
 from cell import Cell
 from board import Board
 from controller import Controller
 
-def autocomplete(cards, cells, foundations):
-    print('---Begin autocomplete---')
-
-    card_moved = True
-    while card_moved:
-        card_moved = False
-        for suit in ('spades', 'clubs', 'diamonds', 'hearts'):
-            suit_cards = [c for c in cards if c.on_foundation and c.suit == suit]
-            if suit_cards:
-                high_card = sorted(suit_cards, key=lambda c: c.value, reverse=True)[0]
-                print(f'    High card on {suit} foundation: {high_card.label}')
-                try:
-                    target = [c for c in cards if c.suit == suit and c.value == high_card.value + 1][0]
-                except IndexError:
-                    print(f'All {suit} already on foundation')
-                    break
-                print(f'    Target: {target.label}')
-                if target.on_cell:
-                    print('    Target on cell')
-                    target.move((high_card.x, high_card.y), to_foundation=True)
-                    cards = set_z_indexes(cards)
-                    print(f'    {target.label} targeting {suit} foundation on top of {high_card.label}')
-                    card_moved = True
-                    break
-                else:
-                    print('    Target not on cell')
-                    if target.y == max([c.y for c in cards if c.col == target.col]):
-                        target.move((high_card.x, high_card.y), to_foundation=True)
-                        cards = set_z_indexes(cards)
-                        print(f'    {target.label} moved to {suit} foundation on top of {high_card.label}')
-                        card_moved = True
-                        break
-            else:
-                print(f'    No cards on {suit} foundation')
-                target = [c for c in cards if c.suit == suit and c.value == 1][0]
-                print(f'    Target: {target.label} in cascade #{target.col + 1}')
-                foundation = [f for f in foundations if f.suit == suit][0]
-                if target.on_cell:
-                    print('    Target on cell')
-                    target.move((foundation.x, foundation.y), to_foundation=True)
-                    cards = set_z_indexes(cards)
-                    print(f'    {target.label} moved from cell to {suit} foundation base')
-                    card_moved = True
-                    break
-                else:
-                    print('    Target not on cell')
-                    if target.y == max([c.y for c in cards if c.col == target.col]):
-                        target.move((foundation.x, foundation.y), to_foundation=True)
-                        cards = set_z_indexes(cards)
-                        print(f'{target.label} moved to {suit} foundation base')
-                        card_moved = True
-                        break
-                    else:
-                        print(f'    {target.label} is not at the bottom of its cascade')
-
-    print('----End autocomplete----')
-
-def automove(card, cards, cells, foundations, bases):
-    # Ace to foundation
-    if card.value == 1:
-        print(f'Automove: {card.label} -> {card.suit} foundation')
-        target = [f for f in foundations if f.suit == card.suit][0]
-        card.move((target.x, target.y), to_foundation=True)
-        return
-    elif not card.tableau:
-        cards_on_foundation = [c for c in cards if c.on_foundation and c.suit == card.suit]
-        # Non-ace to foundation
-        if cards_on_foundation:
-            high_card = sorted(cards_on_foundation, key=lambda c: c.value, reverse=True)[0]
-            if high_card.value == card.value - 1:
-                print(f'Automove: {card.label} -> {card.suit} foundation')
-                card.move((high_card.x, high_card.y), to_foundation=True)
-                return
-        # Card to valid cascade
-        if make_valid_move(card, cards, cells, foundations, bases):
-            print(f'Automove: {card.label} -> valid cascade card or empty base')
-            return
-        else:
-            # Move to free cell
-            free_cells = [c for c in cells if c.vacant]
-            if free_cells:
-                cell = free_cells[0]
-                print(f'Automove: {card.label} -> cell #{cell.pos}')
-                card.move((cell.x, cell.y), to_cell=True)
-                return
-            else:
-                print('Automove: No valid targets')
-                return
-    else:
-        if make_valid_move(card, cards, cells, foundations, bases):
-            print(f'Automove: {card.label} + tableau -> valid cascade card or empty base')
-            return
-        else:
-            print('Automove: No valid targets')
-
 def close_menu():
     print('Menu closed')
-
-def deal(deck, deal_event):
-    card = [c for c in deck if not c.animating and not (c.x, c.y) == (c.target_x, c.target_y)]
-    if card:
-        card = card[0]
-        card.animating = True
-        pygame.time.set_timer(deal_event, 50, True)
-    else:
-        global DEALING
-        DEALING = False
-
-def get_cascade_pos(cards, target):
-    bottom_card = [c for c in cards if c.col == target.col][-1]
-    return (bottom_card.x, bottom_card.y + 18)
-
-def get_event_target(event, interactables, controller):
-    cards_under_cursor = [c for c in cards if c.rect.collidepoint(event.pos) if c != controller.target_item]
-    print(f'Cards under cursor: {", ".join([c.label for c in cards_under_cursor])}')
-    if cards_under_cursor:
-        if cards_under_cursor[0].on_foundation:
-            # Sort foundation cards by value; take highest
-            cards_under_cursor = sorted(cards_under_cursor, key=lambda c: c.value, reverse=True)
-        else:
-            # Sort non-foundation cards by y position; take highest
-            cards_under_cursor = sorted(cards_under_cursor, key=lambda c: c.y, reverse=True)
-        return cards_under_cursor[0]
-
-    # Cells
-    try:
-        return [c for c in interactables['cells'] if c.rect.collidepoint(event.pos)][0]
-    except IndexError:
-        pass
-
-    # Foundations
-    try:
-        return [c for c in foundations if c.rect.collidepoint(event.pos)][0]
-    except IndexError:
-        pass
-
-    # Bases
-    try:
-        return [c for c in bases if c.rect.collidepoint(event.pos)][0]
-    except IndexError:
-        pass
-
-    return None # Not a valid target
-
-def get_max_draggable_tableau(cards, to_base = 0):
-    empty_cols = 0
-    for n in range(8):
-        if not [c for c in cards if c.col == n]:
-            empty_cols += 1
-    return (5 - len([c for c in cards if c.on_cell])) * (empty_cols - to_base + 1)
-
-def get_input_event(event, controller):
-    global INPUT_ENABLED
-    global GAME_IN_PROGRESS
-    global PAUSED
-
-    btn = controller.get_action_button(event)
-
-    # 'A' pressed
-    if btn == controller.btn_a:
-        if INPUT_ENABLED and GAME_IN_PROGRESS and not PAUSED:
-            print('<btn> press: A')
-            return 'A press'
-
-    if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-        if INPUT_ENABLED and GAME_IN_PROGRESS and not PAUSED:
-            if event.pos == mouse_down_pos and click and root_card:
-                print('get_input_event: click')
-                return 'click'
-            else:
-                print('get_input_event: mouse up')
-                return 'mouse up'
-
-    # Mouse motion
-    if event.type == pygame.MOUSEMOTION:
-        if INPUT_ENABLED and GAME_IN_PROGRESS and not PAUSED:
-            return 'mouse motion'
-
-    # Keyboard: Space, S
-    if event.type == pygame.KEYDOWN:
-        if INPUT_ENABLED:
-            if event.key == pygame.K_SPACE:
-                return 'key space'
-            elif event.key == pygame.K_s:
-                return 'key s'
-
-    return None # Not a valid input event
-
-def is_draggable(card, cards):
-    if not card in cards:
-        print('Invalid drag (not a card)')
-        return False
-    if card.on_cell or card.on_foundation:
-        print('Valid card drag (on cell or foundation)')
-        return True
-    # Bottom card in cascade
-    if card == [c for c in cards if c.col == card.col][-1]:
-        print('Valid card drag (bottom of cascade)')
-        return True
-    # Non-bottom card, but all below are in a tableau
-    cards_below = len([c for c in cards if c.col == card.col and c.y > card.y])
-    # return bool(len(card.tableau) == cards_below)
-    if len(card.tableau) == cards_below:
-        if len(card.tableau) + 1 <= get_max_draggable_tableau(cards):
-            print('Valid card drag (root of bottom tableau)')
-            return True
-        else:
-            print(f'Invalid card drag (tableau size: {len(card.tableau) + 1}; only {get_max_draggable_tableau(cards)} can be moved)')
-            return False
-    else:
-        print(f'Invalid card drag ({len(card.tableau)} cards in tableau; {cards_below} cards below target: {", ".join([c2.label for c2 in [c for c in cards if c.col == card.col and c.y > card.y]])})')
-        return False
 
 def is_tableau(stack):
     for i in range(1, len(stack)):
@@ -292,84 +82,16 @@ def is_valid_move(card, target, cards, cells, foundations, bases):
         print('Invalid move to card that is not 1 higher')
         return False
 
-def make_valid_move(card, cards, cells, foundations, bases):
-    print('make_valid_move(): Start')
-    possible_moves = []
-    for col in range(8):
-        if col == card.col:
-            continue
-        col_cards = [c for c in cards if c.col == col]
-        try:
-            possible_moves.append(sorted(col_cards, key=lambda c: c.y, reverse=True)[0])
-        except IndexError:
-            # No cards in column; add base instead
-            possible_moves.append([b for b in bases if b.col == col][0])
-    print(f'make_valid_move(): {card.label} ? {", ".join([c.label if c in cards  else "[base]" for c in possible_moves])}')
-    for target in [t for t in possible_moves if t not in bases]:
-        if not target.color == card.color and target.value == card.value + 1:
-            print(f'make_valid_move(): {card.label} -> {target.label}, col={target.col}')
-            card.move(get_cascade_pos(cards, target), target.col)
-            return True
-    for target in [t for t in possible_moves if t in bases]:
-        if is_valid_move(card, target, cards, cells, foundations, bases):
-            print(f'make_valid_move(): {card.label} -> cascade base (col={target.col})')
-            card.move((target.x, target.y), target.col)
-            return True
-    print('make_valid_move(): No valid move to make')
-    return False
-
 def open_menu():
     print('Menu open')
 
-def reset_tableaux_and_cells(cards, cells):
-    for cell in cells:
-        cell.vacant = True
-    for card in cards:
-        card.tableau = []
-        cards_below = [c for c in cards if c.col == card.col and c.target_y > card.target_y and not c.on_foundation and not c.on_cell]
-        for n in range(len(cards_below)):
-            child = cards_below[n]
-            parent = cards_below[n - 1] if n else card
-            if child.value == parent.value - 1 and not child.color == parent.color:
-                card.tableau.append(child)
-            else:
-                break
-        if card.on_cell:
-            try:
-                cell = [c for c in cells if c.rect.colliderect(card.rect)][0]
-                cell.vacant = False
-            except IndexError:
-                print(f'ERROR: {card.label}.on_cell = True; cannot find occupied cell')
-
-def set_card_starting_positions(deck, x_pos):
-    col = 1
-    row = 0
-    for card in deck:
-        if col > 8:
-            col = 0
-            row += 1
-        card.col = col
-        card.target_x = x_pos[col]
-        card.target_y = 16 + row * 18
-        card.rect = card.surf.get_rect(topleft=(card.target_x, card.target_y))
-        col += 1
-
-def set_z_indexes(cards):
-    cards = sorted(cards, key=lambda c: c.y)
-    for suit in ('spades', 'clubs', 'diamonds', 'hearts'):
-        cards_on_foundation = [c for c in cards if c.on_foundation and c.suit == suit]
-        if cards_on_foundation:
-            top_card = sorted(cards_on_foundation, key=lambda c: c.value, reverse=True)[0]
-            cards.append(cards.pop(cards.index(top_card))) # TODO: working?
-    return cards
-
 def toggle_menu():
-    global PAUSED
-    if PAUSED:
-        PAUSED = False
+    global MENU_OPEN
+    if MENU_OPEN:
+        MENU_OPEN = False
         close_menu()
     else:
-        PAUSED = True
+        MENU_OPEN = True
         open_menu()
 
 def win():
@@ -378,66 +100,56 @@ def win():
     print('You win!')
 
 def main():
-    dims = (640, 240)
+    screen_dims = (240, 160)
     pygame.init()
-    pygame.display.set_caption('Jornada Freecell')
-    window_surface = pygame.display.set_mode(dims)
+    pygame.display.set_caption('GBA Freecell')
+    screen = pygame.display.set_mode(screen_dims)
+
+    controller = Controller() # Input device
 
     clock = pygame.time.Clock()
     fps = 0
     deal_event = pygame.USEREVENT + 0
 
-    c_background = pygame.Color('#cadc9f')
     c_transparent = pygame.Color('#ff00ff')
 
-    background = pygame.Surface(dims)
-    background.fill(c_background)
-    board = pygame.Surface(dims)
+    background = pygame.Surface(screen_dims)
     board_bmp = pygame.image.load('board.bmp')
-    board_bmp.set_colorkey(c_transparent)
+    background.blit(board_bmp, (0, 0))
 
     global INPUT_ENABLED
     global GAME_IN_PROGRESS
-    global PAUSED
+    global MENU_OPEN
     global DEALING
     INPUT_ENABLED = False
     GAME_IN_PROGRESS = True
-    PAUSED = False
     DEALING = True
+    MENU_OPEN = False
 
-    deck_pos = (291, 190)
+    # Card dims: 19 x 28
+    deck_pos = (screen_dims[0] / 2 - 10, screen_dims[1] - 28 - 6)
     card_back = pygame.image.load('card_back.bmp')
     card_back.set_colorkey(c_transparent)
 
     suits = ('spades', 'clubs', 'diamonds', 'hearts')
-    cells = [Cell('cell', x, c_transparent) for x in range(4)]
-    foundations = [Cell('foundation', x, c_transparent, suits[x]) for x in range(4)]
-    card_size = (58, 34)
-    x_col_positions = [77 + x * (card_size[0] + 3) for x in range(8)]
-    bases = [Cell('base', x_col_positions[x], c_transparent, col=x) for x in range(8)]
-    undo_pos = (0, 0)
-    root_card = None
+    cells = [Cell(cell_type='cell', pos=n, col=0) for n in range(4)]
+    foundations = [Cell(cell_type='foundation', pos=n, col=9, suit=suits[n]) for n in range(4)]
+    bases = [Cell(cell_type='base', pos=n, col=1+n) for x in range(8)]
 
     cards = []
     for val in range(1, 14):
         for suit in suits:
             cards.append(
-                Card(pos=deck_pos, transparent=c_transparent, value=val, suit=suit))
+                Card(pos=deck_pos, transparent=c_transparent, value=val, suit=suit, suits=suits))
 
     board = Board(cards, foundations, cells, bases)
-
-    random.shuffle(cards)
-    # col 0: cells
-    # cols 1-8: cascades
-    # col 9: foundations
-    set_card_starting_positions(cards, x_col_positions)
-    deal(cards, deal_event)
-    reset_tableaux_and_cells(cards, cells)
-
-    controller = Controller() # Input device
+    board.shuffle()
+    board.initialize_card_cols()
+    board.initialize_card_target_positions()
+    board.deal(deal_event)
+    board.reset_tableaux()
 
     is_running = True
-    click_timer = 30
 
     while is_running:
         clock.tick(60)
@@ -448,7 +160,7 @@ def main():
                 is_running = False
 
             elif event.type == deal_event:
-                deal(cards, deal_event)
+                board.deal(deal_event)
 
             elif event.type == pygame.KEYDOWN:
                 input_event = None
@@ -458,13 +170,16 @@ def main():
                 if input_event == 'A press':
                     if board.selected_card:
                         # Should always be over a valid move
-                        board.place_active_card()
+                        board.place_selected_card()
+                        board.set_cards_z_index()
                     else:
                         # Should always be over a valid card to move
-                        board.activate_selected()
+                        board.select_hovered()
+
                 elif input_event == 'B press':
                     if board.selected_card:
                         board.deselect()
+
                 elif input_event == 'D-PAD UP press':
                     board.handle_move_hover(direction='up')
                 elif input_event == 'D-PAD RIGHT press':
@@ -474,19 +189,24 @@ def main():
                 elif input_event == 'D-PAD LEFT press':
                     board.handle_move_hover(direction='left')
 
-        window_surface.blit(background, (0, 0))
-        window_surface.blit(board_bmp, (0, 0))
-        for base in bases:
-            window_surface.blit(base.surf, (base.x, base.y))
-        for cell in cells + foundations:
-            window_surface.blit(cell.surf, (cell.x, cell.y))
-        for card in cards:
-            card.update(pygame.mouse.get_pos())
-            window_surface.blit(card.surf, (card.x, card.y))
+                elif input_event == 'SPACE press':
+                    toggle_menu()
+
+        # Draw background (board)
+        screen.blit(background, (0, 0))
+
+        # Draw cards
+        for card in board.cards:
+            card.animate() # Update position if moving
+            screen.blit(card.surf, card.pos)
+
+        # Draw card back 'deck' while dealing
         if DEALING:
-            window_surface.blit(card_back, deck_pos)
-        # Wait for animation
+            screen.blit(card_back, deck_pos)
+
+        # Wait for card animation
         INPUT_ENABLED = not bool(len([c for c in cards if c.animating]))
+
         pygame.display.update()
 
 if __name__ == '__main__':

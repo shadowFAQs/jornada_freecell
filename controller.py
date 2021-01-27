@@ -6,12 +6,12 @@ class Controller(object):
 
         self.btn_a = {
             'name': 'A',
-            'map': pygame.K_p, # Keyboard 'P'
+            'map': pygame.K_j, # Keyboard 'J'
             'pressed': False
         }
         self.btn_b = {
             'name': 'B',
-            'map': pygame.K_l, # Keyboard 'L'
+            'map': pygame.K_i, # Keyboard 'I'
             'pressed': False
         }
 
@@ -37,8 +37,8 @@ class Controller(object):
         }
 
         self.btn_start = {
-            'name': 'D-PAD LEFT',
-            'map': pygame.K_SPACE, # Keyboard 'A'
+            'name': 'START',
+            'map': pygame.K_SPACE, # Keyboard 'SPACE'
             'pressed': False
         }
 

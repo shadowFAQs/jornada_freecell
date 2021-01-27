@@ -1,38 +1,25 @@
 import pygame
 
 class Cell(object):
-    def __init__(self, cell_type, pos, transparent, suit=None, col=None):
+    def __init__(self, cell_type, pos, col, suit=None):
         self.cell_type = cell_type
         self.col = col
-        self.dims = (58, 34)
         self.suit = suit
-        self.surf = pygame.Surface(self.dims)
-        self.value = 0
+        self.vacant = True
 
-        if cell_type == 'cell':
-            self.pos = (16, 44 + pos * (self.dims[1] + 4))
-            self.vacant = True
-
-            self.surf.blit(pygame.image.load('empty_cell.bmp'), (0, 0))
-            self.surf.set_colorkey(transparent)
-
-        elif cell_type == 'foundation':
-            self.pos = (566, 44 + pos * (self.dims[1] + 4))
-
-            suit = pygame.Surface((18, 18))
-            self.surf.blit(pygame.image.load('foundation.bmp'), (0, 0))
-            self.surf.set_colorkey(transparent)
-            suit.blit(pygame.image.load('suits_large.bmp'), (-18 * pos, 0))
-            suit.set_colorkey(transparent)
-
-            if pos == 0:
-                self.surf.blit(suit, ((self.dims[0] - 18) / 2, (self.dims[1] - 18) / 2 - 1))
-            else:
-                self.surf.blit(suit, ((self.dims[0] - 18) / 2, (self.dims[1] - 18) / 2 - 2))
-
-        elif cell_type == 'base':
-            self.pos = (pos, 16)
+        if cell_type == 'base':
+            # Anchor point for base 0 is (32, 6)
+            # Bases are 23px apart
+            self.pos = (32 + pos * 23, 6)
             self.vacant = False
 
-            self.surf.blit(pygame.image.load('cascade_base.bmp'), (0, 0))
-            self.surf.set_colorkey(transparent)
+        elif cell_type == 'cell':
+            # Anchor point for cell 0 is (7, 6)
+            # Cells are 40px apart
+            self.pos = (16, 6 + pos * 40)
+            self.card = None
+
+        elif cell_type == 'foundation':
+            # Anchor point for foundation 0 is (216, 6)
+            # Foundations are 40px apart
+            self.pos = (216, 6 + pos * 40)

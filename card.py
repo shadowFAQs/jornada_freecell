@@ -2,22 +2,21 @@ import math
 import pygame
 
 class Card(object):
-    def __init__(self, pos, transparent, value, suit):
-        super(Card, self).__init__()
+    def __init__(self, pos, transparent, value, suit, suits):
         self.all_values = [0, 'A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K']
-        self.all_suits = ['spades', 'clubs', 'diamonds', 'hearts']
+        self.all_suits = suits
         self.animating = False
         self.c_transparent = transparent
         self.col = 0
-        self.dims = (58, 34)
+        self.dims = (19, 28) # Was (58, 34)
         self.face_up = False
         self.on_cell = False
         self.on_foundation = False
         self.pos = pos
         self.suit = suit
         self.surf = pygame.Surface(self.dims)
-        self.surf_suit = pygame.Surface((16, 16))
-        self.surf_value = pygame.Surface((16, 16))
+        self.surf_suit = pygame.Surface((14, 14))
+        self.surf_value = pygame.Surface((14, 14))
         self.tableau = []
         self.target_pos = pos
         self.value = value
@@ -34,6 +33,33 @@ class Card(object):
         self.bmp_values_black = pygame.image.load('values_black.bmp')
         self.bmp_values_red = pygame.image.load('values_red.bmp')
         self.draw_face()
+
+    def animate(self):
+        if self.animating:
+            if self.pos != self.target_pos:
+                x_diff = self.target_pos[0] - self.pos[0]
+                y_diff = self.target_pos[1] - self.pos[1]
+                if x_diff > 0:
+                    x = self.pos[0] + math.ceil(abs(x_diff / 5))
+                    self.pos = (x, self.pos[1])
+                elif x_diff < 0:
+                    x = self.pos[0] - math.ceil(abs(x_diff / 5))
+                    self.pos = (x, self.pos[1])
+                if y_diff > 0:
+                    y = self.pos[1] + math.ceil(abs(y_diff / 5))
+                    self.pos = (self.pos[0], y)
+                elif y_diff < 0:
+                     y = self.pos[1] - math.ceil(abs(y_diff / 5))
+                    self.pos = (self.pos[0], y)
+
+                x_diff = self.target_pos[0] - self.pos[0]
+                y_diff = self.target_pos[1] - self.pos[1]
+                if abs(x_diff) < 2:
+                    self.pos = (self.target_pos[0], self.pos[1])
+                if abs(y_diff) < 2:
+                    self.pos = (self.pos[0], self.target_pos[1])
+            else:
+                self.animating = False
 
     def draw_face(self):
         suit_index = self.all_suits.index(self.suit)
@@ -65,26 +91,3 @@ class Card(object):
     def set_label(self):
         value = self.all_values[self.value]
         self.label = f"{value}{self.suit[0].upper()}"
-
-    def update(self, mouse_pos=None):
-        if self.animating:
-            if not self.pos == self.target_pos:
-                x_diff = self.target_pos[0] - self.pos[0]
-                y_diff = self.target_pos[1] - self.pos[1]
-                if x_diff > 0:
-                    self.x += math.ceil(abs(x_diff / 5))
-                elif x_diff < 0:
-                    self.x -= math.ceil(abs(x_diff / 5))
-                if y_diff > 0:
-                    self.y += math.ceil(abs(y_diff / 5))
-                elif y_diff < 0:
-                    self.y -= math.ceil(abs(y_diff / 5))
-
-                x_diff = self.target_pos[0] - self.pos[0]
-                y_diff = self.target_pos[1] - self.pos[1]
-                if abs(x_diff) < 2:
-                    self.pos = (self.target_pos[0], self.pos[1])
-                if abs(y_diff) < 2:
-                    self.pos = (self.pos[0], self.target_pos[1])
-            else:
-                self.animating = False
