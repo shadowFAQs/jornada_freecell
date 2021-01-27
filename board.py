@@ -5,14 +5,12 @@ class Board(object):
     def __init__(self, cards, foundations, cells, bases):
         self.all_suits = cards[0].all_suits
         self.bases = bases
-        self cards = cards
+        self.cards = cards
         self.cells = cells
         self.foundations = foundations
         self.hovered = None
         self.selected_card = None
         self.valid_moves = []
-
-        self.hover_last_card_in_cascade(1)
 
     def activate_hovered(self):
         self.selected_card = self.hovered
@@ -123,7 +121,7 @@ class Board(object):
 
     def get_last_card_in_cascade(self, index):
         cascade = [c for c in cards if c.col == index]
-        return sorted(cascade, key=lambda c:c.y)[-1] if cascade else None
+        return sorted(cascade, key=lambda c:c.pos[1])[-1] if cascade else None
 
     def get_max_tableau_size(self):
         return (5 - len([c for c in self.cards if c.on_cell])) * (self.count_empty_bases() + 1)
@@ -143,6 +141,10 @@ class Board(object):
         else:
             self.move_hover_with_no_selection(direction)
 
+    def hover_last_card_in_cascade(self, index):
+        cards_in_cascade = [c for c in self.cards if c.col == index]
+        self.hovered = sorted(cards_in_cascade, key=lambda c: c.pos[1])[-1]
+
     def initialize_card_cols(self):
         """
         col 0:    cells
@@ -161,8 +163,8 @@ class Board(object):
         # Cascades are 23px apart
         # Cards in cascades are stacked 14px apart
         for n in range(1, 9):
-            for i, card in enumerate([c for c in self.cards if self.col == n]):
-                x_pos = 32 + n * 23
+            for i, card in enumerate([c for c in self.cards if c.col == n]):
+                x_pos = 32 + (n - 1) * 22
                 y_pos = 6 + i * 14
                 card.target_pos = (x_pos, y_pos)
 
@@ -176,8 +178,8 @@ class Board(object):
         """
         if direction == 'up':
             # Check cards above in current column
-            positions_to_check = [c for c in self.cards if c.col == self.hovered.col and c.y < self.hovered.y]
-            positions_to_check = sorted(positions_to_check, key=lambda c: c.y, reverse=True)
+            positions_to_check = [c for c in self.cards if c.col == self.hovered.col and c.pos[1] < self.hovered.pos[1]]
+            positions_to_check = sorted(positions_to_check, key=lambda c: c.pos[1], reverse=True)
 
         elif direction == 'right':
             # Check cards in cascades to the right
@@ -192,8 +194,8 @@ class Board(object):
 
         elif direction == 'down':
             # Check cards below in current column
-            positions_to_check = [c for c in self.cards if c.col == self.hovered.col and c.y < self.hovered.y]
-            positions_to_check = sorted(positions_to_check, key=lambda c: c.y)
+            positions_to_check = [c for c in self.cards if c.col == self.hovered.col and c.pos[1] < self.hovered.pos[1]]
+            positions_to_check = sorted(positions_to_check, key=lambda c: c.pos[1])
 
         elif direction == 'left':
             # Check cards in cascades to the left
@@ -297,7 +299,7 @@ class Board(object):
     def reset_tableaux(self):
         for card in self.cards:
             card.tableau = []
-            cards_below = [c for c in self.cards if c.col == card.col and c.target_y > card.target_y and not c.on_foundation and not c.on_cell]
+            cards_below = [c for c in self.cards if c.col == card.col and c.target_pos[1] > card.target_pos[1] and not c.on_foundation and not c.on_cell]
             for n in range(len(cards_below)):
                 child = cards_below[n]
                 parent = cards_below[n - 1] if n else card
@@ -316,7 +318,7 @@ class Board(object):
         2. Cards on foundations (by value, low to high)
         3. Cards on cells (unsorted)
         """
-        cascade_cards = sorted([c for c in self.cards if not c.on_cell and not c.on_foundation], key=lambda c: c.y)
+        cascade_cards = sorted([c for c in self.cards if not c.on_cell and not c.on_foundation], key=lambda c: c.pos[1])
         foundation_cards = sorted([c for c in self.cards if c.on_foundation], key=lambda c: c.value)
         self.cards = cascade_cards + foundation_cards + [c for c in self.cards if c.on_cell]
 

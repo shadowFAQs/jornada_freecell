@@ -1,4 +1,3 @@
-import math
 import pygame
 from card import Card
 from cell import Cell
@@ -7,80 +6,6 @@ from controller import Controller
 
 def close_menu():
     print('Menu closed')
-
-def is_tableau(stack):
-    for i in range(1, len(stack)):
-        card = stack[i]
-        parent = stack[i - 1]
-        if not card.value == parent.value - 1:
-            return False
-        if card.color == parent.color:
-            return False
-    return True
-
-def is_valid_move(card, target, cards, cells, foundations, bases):
-    if target in foundations:
-        if card.value == target.value + 1 and card.suit == target.suit:
-            if card.tableau:
-                print('Invalid move of tableau to foundation')
-                return False
-            # Valid move to foundation
-            return True
-        else:
-            print('Invalid move to empty foundation')
-            return False
-    if target in cells:
-        if card.tableau:
-            print('Invalid move of tableau to cell')
-            return False
-        # Valid move to free cell
-        return True
-    if target in bases:
-        if card.tableau:
-            if len(card.tableau) + 1 > get_max_draggable_tableau(cards, to_base=1):
-                print('Invalid move of tableau to cascade base (too many cards in tableau)')
-                return False
-            else:
-                print('Valid move to cascade base')
-                return True
-        else:
-            print('Valid move to cascade base')
-            return True
-    if target.on_cell:
-        print('Invalid move to card on cell')
-        return False
-    if target.on_foundation:
-        if card.tableau:
-            print('Invalid move of tableau to card on foundation')
-            return False
-        # Set target to highest value card on foundation
-        foundation_target = sorted([c for c in cards if c.on_foundation and c.suit == target.suit], key=lambda c: c.value, reverse=True)[0]
-        if card.value == foundation_target.value + 1 and card.suit == foundation_target.suit:
-            # Valid move to card on foundation
-            return True
-        else:
-            print(f'Invalid move to card on foundation: card {card.label} has value "{card.value}", suit "{card.suit}"; target {foundation_target.label} has value "{foundation_target.value}", suit "{foundation_target.suit}"')
-            return False
-    # Own column
-    if card.col == target.col:
-        print('Invalid move to own cascade')
-        return False
-    # Target not bottom card
-    col_card = [c for c in cards if c.col == target.col][-1]
-    if not target == col_card:
-        print('Invalid move to card not at the bottom of its cascade')
-        return False
-    # Same-color card
-    if col_card.color == card.color:
-        print('Invalid move to card of same color')
-        return False
-    # Valid move
-    if col_card.value == card.value + 1:
-        return True
-    else:
-        # Not 1 higher
-        print('Invalid move to card that is not 1 higher')
-        return False
 
 def open_menu():
     print('Menu open')
@@ -134,7 +59,7 @@ def main():
     suits = ('spades', 'clubs', 'diamonds', 'hearts')
     cells = [Cell(cell_type='cell', pos=n, col=0) for n in range(4)]
     foundations = [Cell(cell_type='foundation', pos=n, col=9, suit=suits[n]) for n in range(4)]
-    bases = [Cell(cell_type='base', pos=n, col=1+n) for x in range(8)]
+    bases = [Cell(cell_type='base', pos=n, col=n+1) for n in range(8)]
 
     cards = []
     for val in range(1, 14):
@@ -203,9 +128,13 @@ def main():
         # Draw card back 'deck' while dealing
         if DEALING:
             screen.blit(card_back, deck_pos)
-
-        # Wait for card animation
-        INPUT_ENABLED = not bool(len([c for c in cards if c.animating]))
+            # Unset DEALING flag when cards are done animating
+            animating = [c for c in board.cards if c.animating]
+            if not animating:
+                DEALING = False
+                INPUT_ENABLED = True
+                # Select bottom card in first cascade
+                board.hover_last_card_in_cascade(1)
 
         pygame.display.update()
 
@@ -218,14 +147,13 @@ TODO
 
 - Menu
     - Show menu interface
-    - Restart / new game
+    - Solve
+    - New game
+    - Statistics
 - Restack cards when cascades too long to fit on screen
-- Update 'drop' placement of drag-and-drop so cursor doesn't need to be over target card
-- Update 'click' so moving a couple pixels over the course of like 0.5s doesn't count as a drag
 - Controller support
     1. Selection graphics
     2. Arrow / WASD input
     3. Map controller input
-- Big refactor
 
 """

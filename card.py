@@ -47,7 +47,7 @@ class Card(object):
                     y = self.pos[1] + math.ceil(abs(y_diff / 5))
                     self.pos = (self.pos[0], y)
                 elif y_diff < 0:
-                     y = self.pos[1] - math.ceil(abs(y_diff / 5))
+                    y = self.pos[1] - math.ceil(abs(y_diff / 5))
                     self.pos = (self.pos[0], y)
 
                 x_diff = self.target_pos[0] - self.pos[0]
