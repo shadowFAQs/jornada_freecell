@@ -90,7 +90,7 @@ def main():
             elif event.type == pygame.KEYDOWN:
                 input_event = None
                 if INPUT_ENABLED:
-                    input_event = get_input_event(event, controller)
+                    input_event = controller.get_action_button(event)
 
                 if input_event == 'A press':
                     if board.selected_card:

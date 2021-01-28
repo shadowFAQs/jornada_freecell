@@ -17,7 +17,7 @@ class Board(object):
         self.hovered = self.valid_moves[0]
 
     def count_empty_bases(self):
-        return len([b for b in bases if b.vacant])
+        return len([b for b in self.bases if b.vacant])
 
     def deal(self, deal_event):
         to_deal = [c for c in self.cards if not c.animating and c.pos != c.target_pos]
@@ -120,7 +120,7 @@ class Board(object):
         return (card.pos[0], y_pos)
 
     def get_last_card_in_cascade(self, index):
-        cascade = [c for c in cards if c.col == index]
+        cascade = [c for c in self.cards if c.col == index]
         return sorted(cascade, key=lambda c:c.pos[1])[-1] if cascade else None
 
     def get_max_tableau_size(self):
@@ -185,12 +185,12 @@ class Board(object):
             # Check cards in cascades to the right
             positions_to_check = [c for c in self.cards if c.col > self.hovered.col]
             # Check cards on foundations
-            if hovered.col < 9:
-                for suit in suits:
-                    foundation_card = get_top_card_on_foundation(suit)
+            if self.hovered.col < 9:
+                for suit in self.all_suits:
+                    foundation_card = self.get_top_card_on_foundation(suit)
                     if foundation_card:
                         positions_to_check.append(foundation_card)
-            positions_to_check = sorted(positions_to_check, key=lambda c: c.x)
+            positions_to_check = sorted(positions_to_check, key=lambda c: c.pos[0])
 
         elif direction == 'down':
             # Check cards below in current column
@@ -201,9 +201,9 @@ class Board(object):
             # Check cards in cascades to the left
             positions_to_check = [c for c in self.cards if c.col < self.hovered.col]
             # Check cards on cells
-            if hovered.col > 0:
-                positions_to_check += get_cards_on_cells()
-            positions_to_check = sorted(positions_to_check, key=lambda c: c.x, reverse=True)
+            if self.hovered.col > 0:
+                positions_to_check += self.get_cards_on_cells()
+            positions_to_check = sorted(positions_to_check, key=lambda c: c.pos[0], reverse=True)
 
         if positions_to_check:
             hover = self.find_first_card_with_valid_move(positions_to_check)

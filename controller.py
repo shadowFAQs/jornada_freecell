@@ -47,13 +47,13 @@ class Controller(object):
     def get_action_button(self, event):
         if event.type == pygame.KEYDOWN:
             btn = [b for b in self.buttons if b['map'] == event.key][0]
-            if not pressed:
+            if not btn['pressed']:
                 btn['pressed'] = True
-                return f'{btn.name} press'
+                return f'{btn["name"]} press'
 
         elif event.type == pygame.KEYUP:
             btn = [b for b in self.buttons if b['map'] == event.key][0]
             btn['pressed'] = False
-            return f'{btn.name} release'
+            return f'{btn["name"]} release'
 
         return None
