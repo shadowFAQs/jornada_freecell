@@ -122,15 +122,18 @@ def main():
 
         # Draw cards
         for card in board.cards:
-            card.animate() # Update position if moving
+            if not DEALING:
+                card.hovered = bool(card == board.hovered)
+                # print(f'{card.label} == {board.hovered.label}? {bool(card == board.hovered)}, {card.hovered}')
+            card.update()
             screen.blit(card.surf, card.pos)
 
         # Draw card back 'deck' while dealing
         if DEALING:
             screen.blit(card_back, deck_pos)
             # Unset DEALING flag when cards are done animating
-            animating = [c for c in board.cards if c.animating]
-            if not animating:
+            cards_animating = [c for c in board.cards if c.animating]
+            if not cards_animating:
                 DEALING = False
                 INPUT_ENABLED = True
                 # Select bottom card in first cascade
