@@ -67,7 +67,7 @@ def main():
             cards.append(
                 Card(pos=deck_pos, transparent=c_transparent, value=val, suit=suit, suits=suits))
 
-    board = Board(cards, foundations, cells, bases)
+    board = Board(cards, foundations, cells, bases, c_transparent)
     board.shuffle()
     board.initialize_card_cols()
     board.initialize_card_target_positions()
@@ -124,9 +124,12 @@ def main():
         for card in board.cards:
             if not DEALING:
                 card.hovered = bool(card == board.hovered)
-                # print(f'{card.label} == {board.hovered.label}? {bool(card == board.hovered)}, {card.hovered}')
             card.update()
             screen.blit(card.surf, card.pos)
+
+        # Draw select marker, if applicable
+        if board.selected_card:
+            screen.blit(board.bmp_marker, (board.selected_card.get_marker_pos()))
 
         # Draw card back 'deck' while dealing
         if DEALING:

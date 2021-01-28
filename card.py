@@ -47,24 +47,30 @@ class Card(object):
         self.surf.blit(self.surf_suit, (10, 3))
         self.surf.set_colorkey(self.c_transparent)
 
-    def move(self, pos):
+    def get_marker_pos(self):
+        # Marker dimentions: 10 x 6
+        return (self.pos[0] + int(self.dims[0] / 2) - 5, self.pos[1] - 4)
+
+    def move(self, pos, col):
         self.pos = pos
         self.target_pos = pos
         self.col = col
 
         self.move_tableau(col)
 
-    def move_tableau(self, col=None):
+    def move_tableau(self, col):
         for i in range(len(self.tableau)):
             card = self.tableau[i]
             card.pos = (self.pos[0], self.pos[1] + 18 + i * 18)
             card.target_pos = card.pos
+            card.col = col
 
     def set_label(self):
         value = self.all_values[self.value]
         self.label = f"{value}{self.suit[0].upper()}"
 
     def update(self):
+        # Update display position (during deal)
         if self.animating:
             if self.pos != self.target_pos:
                 x_diff = self.target_pos[0] - self.pos[0]
@@ -91,6 +97,7 @@ class Card(object):
             else:
                 self.animating = False
 
+        # Draw hovered / unhovered face
         if self.hovered:
             self.draw_face(self.bmp_hover)
         else:

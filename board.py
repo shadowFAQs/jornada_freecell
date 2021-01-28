@@ -2,7 +2,7 @@ import random
 import pygame
 
 class Board(object):
-    def __init__(self, cards, foundations, cells, bases):
+    def __init__(self, cards, foundations, cells, bases, transparent):
         self.all_suits = cards[0].all_suits
         self.bases = bases
         self.cards = cards
@@ -12,24 +12,8 @@ class Board(object):
         self.selected_card = None
         self.valid_moves = []
 
-    def activate_hovered(self):
-        self.selected_card = self.hovered
-        self.hovered = self.valid_moves[0]
-
-    def is_tableau(self, cards):
-        if len(cards) < 2:
-            return True
-
-        color = cards[0].color
-        value = cards[0].value
-
-        for card in cards[1:]:
-            if card.color == color or card.value != value - 1:
-                return False
-            color = card.color
-            value = card.value
-
-        return True
+        self.bmp_marker = pygame.image.load('select_marker.bmp')
+        self.bmp_marker.set_colorkey(transparent)
 
     def count_empty_bases(self):
         return len([b for b in self.bases if b.vacant])
@@ -135,14 +119,17 @@ class Board(object):
     def get_cards_on_cells(self):
         return [c for c in self.cards if c.on_cell]
 
-    def get_empty_bases(self):
-        return [b for b in self.bases if b.vacant]
-
     def get_cascade_offset_from_card(self, card):
         num_cards_in_col = len([c for c in self.cards if c.col == card.col])
         offset = 18 # TODO: Shrink offset if num_cards_in_col too high
         y_pos = card.pos[1] + offset
         return (card.pos[0], y_pos)
+
+    def get_empty_bases(self):
+        return [b for b in self.bases if b.vacant]
+
+    def get_free_cells(self):
+        return [c for c in self.cells if c.vacant]
 
     def get_last_card_in_cascade(self, index):
         cascade = [c for c in self.cards if c.col == index]
@@ -170,6 +157,9 @@ class Board(object):
         cards_in_cascade = [c for c in self.cards if c.col == index]
         self.hovered = sorted(cards_in_cascade, key=lambda c: c.pos[1])[-1]
 
+    def hover_top_foundation_card(self, suit):
+        self.hovered = sorted([c for c in cards if c.suit == suit and c.on_foundation], key=lambda c: c.value)[-1]
+
     def initialize_card_cols(self):
         """
         col 0:    cells
@@ -192,6 +182,21 @@ class Board(object):
                 x_pos = 32 + (n - 1) * 22
                 y_pos = 6 + i * 14
                 card.target_pos = (x_pos, y_pos)
+
+    def is_tableau(self, cards):
+        if len(cards) < 2:
+            return True
+
+        color = cards[0].color
+        value = cards[0].value
+
+        for card in cards[1:]:
+            if card.color == color or card.value != value - 1:
+                return False
+            color = card.color
+            value = card.value
+
+        return True
 
     def move_hover_with_no_selection(self, direction):
         """
@@ -252,8 +257,8 @@ class Board(object):
             # Check bottom cards in cascades to the right
             positions_to_check = [self.get_last_card_in_cascade(n) for n in range(self.hovered.col, 9)]
             # Check card on same-suit foundation
-            if hovered.col < 9:
-                foundation_card = get_top_card_on_foundation(selected_card.suit)
+            if self.hovered.col < 9:
+                foundation_card = self.get_top_card_on_foundation(self.selected_card.suit)
                 if foundation_card:
                     positions_to_check.append(foundation_card)
                 else:
@@ -286,7 +291,7 @@ class Board(object):
         Move selected card to 'hovered' position. This position is
         assumed to be a valid move.
         """
-        if selected_card.on_cell:
+        if self.selected_card.on_cell:
             # Clear 'card' prop from cell that selected_card moved from
             cell = [c for c in self.cells if c.card == self.selected_card]
             cell.card = None
@@ -296,7 +301,7 @@ class Board(object):
         self.selected_card.on_foundation = False
 
         # On free cell
-        if self.hovered in cells:
+        if self.hovered in self.cells:
             self.selected_card.on_cell = True
             self.selected_card.move(pos=self.hovered.pos, col=0)
             self.hovered.card = self.selected_card
@@ -307,10 +312,10 @@ class Board(object):
         elif self.hovered.on_foundation or self.hovered in self.foundations:
             self.selected_card.on_foundation = True
             self.selected_card.move(pos=self.hovered.pos, col=9)
-            self.select_top_foundation_card(suit=self.hovered.suit)
+            self.hover_top_foundation_card(suit=self.hovered.suit)
 
         # On empty base
-        elif self.hovered in bases:
+        elif self.hovered in self.bases:
             self.selected_card.move(pos=self.hovered.pos, col=self.hovered.col)
             self.hovered = self.get_last_card_in_cascade(self.hovered.col)
 
@@ -326,8 +331,9 @@ class Board(object):
         for card in self.cards:
             self.set_tableau(card)
 
-    def select_top_foundation_card(self, suit):
-        self.hovered = sorted([c for c in cards if c.suit == suit and c.on_foundation], key=lambda c: c.value)[-1]
+    def select_hovered(self):
+        self.selected_card = self.hovered
+        self.set_hover_from_selected()
 
     def set_cards_z_index(self):
         """
@@ -339,6 +345,40 @@ class Board(object):
         cascade_cards = sorted([c for c in self.cards if not c.on_cell and not c.on_foundation], key=lambda c: c.pos[1])
         foundation_cards = sorted([c for c in self.cards if c.on_foundation], key=lambda c: c.value)
         self.cards = cascade_cards + foundation_cards + [c for c in self.cards if c.on_cell]
+
+    def set_hover_from_selected(self):
+        """
+        Moves hover to the nearest valid move to selected_card.
+        Checks foundations first, then cascades and bases, then empty cells.
+        Cascade and base positions are sorted by nearest first.
+        """
+        # Check foundation / top foundation card
+        foundation_card = self.get_top_card_on_foundation(self.selected_card.suit)
+        if foundation_card:
+            if self.selected_card.value == foundation_card.value + 1:
+                self.hovered = foundation_card
+                return
+        else:
+            if self.selected_card.value == 1:
+                self.hovered = [f for f in self.foundations if f.suit == self.selected_card.suit][0]
+                return
+
+        # Check bottom cascade cards
+        positions = []
+        for n in range(1, 9):
+            if n != self.selected_card.col:
+                bottom_card = self.get_last_card_in_cascade(n)
+                if bottom_card.color != self.selected_card.color and bottom_card.value == self.selected_card.value + 1:
+                    positions.append(bottom_card)
+        # Check empty bases
+        positions += self.get_empty_bases()
+        # Sort cascade cards and bases by x position, nearest first
+        if positions:
+            self.hovered = sorted(positions, key=lambda c: abs(self.selected_card.pos[0] - c.pos[0]))[0]
+            return
+
+        # Hover over first free cell
+        self.hovered = self.get_free_cells()[0]
 
     def set_tableau(self, card):
         # Cards on cells or foundations have no tableaux
