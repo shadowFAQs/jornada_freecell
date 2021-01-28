@@ -133,7 +133,8 @@ def main():
 
         # Draw card back 'deck' while dealing
         if DEALING:
-            screen.blit(card_back, deck_pos)
+            if [c for c in board.cards if c.pos != c.target_pos and not c.animating]:
+                screen.blit(card_back, deck_pos)
             # Unset DEALING flag when cards are done animating
             cards_animating = [c for c in board.cards if c.animating]
             if not cards_animating:
@@ -151,12 +152,16 @@ if __name__ == '__main__':
 TODO
 ----
 
+- Bug: Can't move hover 'up' a cascade
+- Create & implement graphics for hovered cells
+- Create & implement graphics for hovered foundations
+- Create & implement graphics for hovered bases
+- Update board.get_cascade_offset_from_card() when cascades get too long
 - Menu
     - Show menu interface
     - Solve
     - New game
     - Statistics
-- Restack cards when cascades too long to fit on screen
 - Controller support
     1. Selection graphics
     2. Arrow / WASD input

@@ -121,7 +121,7 @@ class Board(object):
 
     def get_cascade_offset_from_card(self, card):
         num_cards_in_col = len([c for c in self.cards if c.col == card.col])
-        offset = 18 # TODO: Shrink offset if num_cards_in_col too high
+        offset = 14 # TODO: Shrink offset if num_cards_in_col too high
         y_pos = card.pos[1] + offset
         return (card.pos[0], y_pos)
 
