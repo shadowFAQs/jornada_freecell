@@ -153,7 +153,7 @@ class Board(object):
         """
         col = 1
         for card in self.cards:
-            if col > 9:
+            if col > 8:
                 col = 1
             card.col = col
             col += 1
