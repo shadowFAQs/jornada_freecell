@@ -87,7 +87,7 @@ def main():
             elif event.type == deal_event:
                 board.deal(deal_event)
 
-            elif event.type == pygame.KEYDOWN:
+            elif event.type in (pygame.KEYDOWN, pygame.KEYUP):
                 input_event = None
                 if INPUT_ENABLED:
                     input_event = controller.get_action_button(event)
