@@ -16,8 +16,26 @@ class Board(object):
         self.selected_card = self.hovered
         self.hovered = self.valid_moves[0]
 
+    def is_tableau(self, cards):
+        if len(cards) < 2:
+            return True
+
+        color = cards[0].color
+        value = cards[0].value
+
+        for card in cards[1:]:
+            if card.color == color or card.value != value - 1:
+                return False
+            color = card.color
+            value = card.value
+
+        return True
+
     def count_empty_bases(self):
         return len([b for b in self.bases if b.vacant])
+
+    def count_free_cells(self):
+        return len([c for c in self.cells if c.vacant])
 
     def deal(self, deal_event):
         to_deal = [c for c in self.cards if not c.animating and c.pos != c.target_pos]
@@ -72,14 +90,15 @@ class Board(object):
 
             # Card in cascade, but not at the bottom
             else:
-                if len(card.tableau) <= self.get_max_tableau_size():
-                    # Can move to empty base
-                    if self.count_empty_bases():
-                        return card
-                    # Can move to bottom of another cascade
-                    for bottom_card in [self.get_last_card_in_cascade(n) for n in range(1, 9)]:
-                        if bottom_card.color != card.color and bottom_card.value == card.value + 1:
+                if card.tableau:
+                    if len(card.tableau) <= self.get_max_tableau_size():
+                        # Can move to empty base
+                        if self.count_empty_bases():
                             return card
+                        # Can move to bottom of another cascade
+                        for bottom_card in [self.get_last_card_in_cascade(n) for n in range(1, 9)]:
+                            if bottom_card.color != card.color and bottom_card.value == card.value + 1:
+                                return card
 
         return None
 
@@ -106,6 +125,12 @@ class Board(object):
 
     def get_available_cells(self):
         return [c for c in self.cells if c.vacant]
+
+    def get_cards_below_card(self, card):
+        """Returns the cards below a given card, sorted by Y position,
+        low to high.
+        """
+        return sorted([c for c in self.cards if c.col == card.col], key=lambda c:c.pos[1])
 
     def get_cards_on_cells(self):
         return [c for c in self.cards if c.on_cell]
@@ -297,16 +322,9 @@ class Board(object):
         self.selected_card = None
 
     def reset_tableaux(self):
+        """Resets tableaux for all cards"""
         for card in self.cards:
-            card.tableau = []
-            cards_below = [c for c in self.cards if c.col == card.col and c.target_pos[1] > card.target_pos[1] and not c.on_foundation and not c.on_cell]
-            for n in range(len(cards_below)):
-                child = cards_below[n]
-                parent = cards_below[n - 1] if n else card
-                if child.value == parent.value - 1 and not child.color == parent.color:
-                    card.tableau.append(child)
-                else:
-                    break
+            self.set_tableau(card)
 
     def select_top_foundation_card(self, suit):
         self.hovered = sorted([c for c in cards if c.suit == suit and c.on_foundation], key=lambda c: c.value)[-1]
@@ -321,6 +339,18 @@ class Board(object):
         cascade_cards = sorted([c for c in self.cards if not c.on_cell and not c.on_foundation], key=lambda c: c.pos[1])
         foundation_cards = sorted([c for c in self.cards if c.on_foundation], key=lambda c: c.value)
         self.cards = cascade_cards + foundation_cards + [c for c in self.cards if c.on_cell]
+
+    def set_tableau(self, card):
+        # Cards on cells or foundations have no tableaux
+        if card.on_cell or card.on_foundation:
+            card.tableau = []
+
+        else:
+            cards_below = self.get_cards_below_card(card)
+            for n in range(1, len(cards_below)):
+                cards = [card] + cards_below[:n]
+                if self.is_tableau(cards):
+                    card.tableau.append(cards_below[n - 1])
 
     def shuffle(self):
         random.shuffle(self.cards)
