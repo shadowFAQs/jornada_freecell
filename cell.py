@@ -20,6 +20,6 @@ class Cell(object):
             self.card = None
 
         elif cell_type == 'foundation':
-            # Anchor point for foundation 0 is (216, 6)
+            # Anchor point for foundation 0 is (215, 6)
             # Foundations are 40px apart
-            self.pos = (216, 6 + pos * 40)
+            self.pos = (215, 6 + pos * 40)
