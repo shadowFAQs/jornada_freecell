@@ -48,10 +48,6 @@ class Card(object):
         self.surf.blit(self.surf_suit, (10, 3))
         self.surf.set_colorkey(self.c_transparent)
 
-    def get_marker_pos(self):
-        # Marker dimentions: 10 x 6
-        return (self.pos[0] + int(self.dims[0] / 2) - 5, self.pos[1] - 4)
-
     def move(self, pos, col):
         self.pos = pos
         self.target_pos = pos

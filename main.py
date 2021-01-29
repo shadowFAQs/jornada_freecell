@@ -129,9 +129,10 @@ def main():
             card.update()
             screen.blit(card.surf, card.pos)
 
-        # Draw select marker, if applicable
+        # Draw select markers, if applicable
         if board.selected_card:
-            screen.blit(board.bmp_marker, (board.selected_card.get_marker_pos()))
+            for n in range(len(board.select_markers)):
+                screen.blit(board.select_markers[n], (board.select_marker_positions[n]))
 
         # Draw card back 'deck' while dealing
         if DEALING:
@@ -155,8 +156,9 @@ TODO
 ----
 
 - Bug: Stop looking for movable cards if cards below are not a tableau
-- Create select markers for sides and bottom; position all when selection is made
-- Wrap L/R hover around screen
+- Swap 'hovered' and 'selected' graphics (markers should go around hover) while something is selected
+- Wrap L/R hover moves around screen
+- After moving a card to a foundation, set hover back to the last card in the column the card came from (if it has a move; if not, the next closest one)
 - Hold DPAD buttons to repeat 'press' event after delay
 - Create & implement graphics for hovered cells
 - Create & implement graphics for hovered foundations

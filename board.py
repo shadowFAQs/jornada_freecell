@@ -10,11 +10,14 @@ class Board(object):
         self.cells = cells
         self.foundations = foundations
         self.hovered = None
+        self.select_marker_positions = []
         self.selected_card = None
         self.valid_moves = []
 
-        self.bmp_marker = pygame.image.load('select_marker.bmp')
-        self.bmp_marker.set_colorkey(transparent)
+        # Select marker images
+        self.select_markers = [pygame.image.load('select_marker_top.bmp'), pygame.image.load('select_marker_right.bmp'), pygame.image.load('select_marker_bottom.bmp'), pygame.image.load('select_marker_left.bmp')]
+        for marker in self.select_markers:
+            marker.set_colorkey(transparent)
 
     def count_empty_bases(self):
         return len([b for b in self.bases if b.vacant])
@@ -365,6 +368,7 @@ class Board(object):
         self.selected_card = self.hovered
         log('select_hovered', f'Selected hovered card {self.selected_card.label} in col {self.selected_card.col}')
         self.set_hover_from_selected()
+        self.set_select_marker_positions()
 
     def set_cards_z_index(self):
         """
@@ -411,6 +415,29 @@ class Board(object):
 
         # Hover over first free cell
         self.hovered = self.get_free_cells()[0]
+
+    def set_select_marker_positions(self):
+        # Top (11 x 8 px)
+        x_pos = self.selected_card.pos[0] + int(self.selected_card.dims[0] / 2) - 5
+        y_pos = self.selected_card.pos[1] - 4
+        positions = [(x_pos, y_pos)]
+
+        # Right (8 x 11 px)
+        x_pos = self.selected_card.pos[0] + self.selected_card.dims[0] - 4
+        y_pos = self.selected_card.pos[1] + int(self.selected_card.dims[1] / 2) - 6
+        positions.append((x_pos, y_pos))
+
+        # Bottom (11 x 8 px)
+        x_pos = self.selected_card.pos[0] + int(self.selected_card.dims[0] / 2) - 5
+        y_pos = self.selected_card.pos[1] + self.selected_card.dims[1] - 4
+        positions.append((x_pos, y_pos))
+
+        # Left (8 x 11 px)
+        x_pos = self.selected_card.pos[0] + - 4
+        y_pos = self.selected_card.pos[1] + int(self.selected_card.dims[1] / 2) - 6
+        positions.append((x_pos, y_pos))
+
+        self.select_marker_positions = positions
 
     def set_tableau(self, card):
         # Cards on cells or foundations have no tableaux
