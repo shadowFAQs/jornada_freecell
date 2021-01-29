@@ -154,6 +154,8 @@ if __name__ == '__main__':
 TODO
 ----
 
+- Bug: Stop looking for movable cards if cards below are not a tableau
+- Create select markers for sides and bottom; position all when selection is made
 - Wrap L/R hover around screen
 - Hold DPAD buttons to repeat 'press' event after delay
 - Create & implement graphics for hovered cells

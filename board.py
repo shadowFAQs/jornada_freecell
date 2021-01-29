@@ -399,8 +399,9 @@ class Board(object):
         for n in range(1, 9):
             if n != self.selected_card.col:
                 bottom_card = self.get_last_card_in_cascade(n)
-                if bottom_card.color != self.selected_card.color and bottom_card.value == self.selected_card.value + 1:
-                    positions.append(bottom_card)
+                if bottom_card: # Handle empty cascade
+                    if bottom_card.color != self.selected_card.color and bottom_card.value == self.selected_card.value + 1:
+                        positions.append(bottom_card)
         # Check empty bases
         positions += self.get_empty_bases()
         # Sort cascade cards and bases by x position, nearest first
