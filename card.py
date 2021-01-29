@@ -1,5 +1,6 @@
 import math
 import pygame
+from logger import log
 
 class Card(object):
     def __init__(self, pos, transparent, value, suit, suits):
@@ -56,6 +57,8 @@ class Card(object):
         self.target_pos = pos
         self.col = col
 
+        log('card.move', f'{self.label} moved to col {self.col}')
+
         self.move_tableau(col)
 
     def move_tableau(self, col):
@@ -64,6 +67,8 @@ class Card(object):
             card.pos = (self.pos[0], self.pos[1] + 18 + i * 18)
             card.target_pos = card.pos
             card.col = col
+
+            log('card.move_tableau', f'(Part of tableau) {card.label} moved to col {card.col}')
 
     def set_label(self):
         value = self.all_values[self.value]

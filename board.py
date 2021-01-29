@@ -1,5 +1,6 @@
 import random
 import pygame
+from logger import log
 
 class Board(object):
     def __init__(self, cards, foundations, cells, bases, transparent):
@@ -34,6 +35,7 @@ class Board(object):
 
     def find_first_card_with_valid_move(self, cards):
         for card in cards:
+            log('find_first_card_with_valid_move', f'Searching for a move for {card.label}')
             # Card on cell
             if card.on_cell:
                 # Can move to empty base
@@ -74,16 +76,22 @@ class Board(object):
 
             # Card in cascade, but not at the bottom
             else:
+                log('find_first_card_with_valid_move', f'{card.label} in cascade but not at bottom')
                 if card.tableau:
                     if len(card.tableau) <= self.get_max_tableau_size():
                         # Can move to empty base
                         if self.count_empty_bases():
+                            log('find_first_card_with_valid_move', f'Move found for {card.label}: Empty base')
                             return card
                         # Can move to bottom of another cascade
                         for bottom_card in [self.get_last_card_in_cascade(n) for n in range(1, 9)]:
                             if bottom_card.color != card.color and bottom_card.value == card.value + 1:
+                                log('find_first_card_with_valid_move', f'Move found for {card.label}: {bottom_card.label} at bottom of cascade, col {bottom_card.col}')
                                 return card
+                    else:
+                        log('find_first_card_with_valid_move', f'{card.label}\'s tableau ({len(card.tableau)}) exceeds the maximum size ({self.get_max_tableau_size()})')
 
+        log('find_first_card_with_valid_move', 'No move found')
         return None
 
     def find_first_valid_position_for_selected_card(self, positions):
@@ -114,7 +122,7 @@ class Board(object):
         """Returns the cards below a given card, sorted by Y position,
         low to high.
         """
-        return sorted([c for c in self.cards if c.col == card.col], key=lambda c:c.pos[1])
+        return sorted([c for c in self.cards if c.col == card.col and c.pos[1] > card.pos[1]], key=lambda c:c.pos[1])
 
     def get_cards_on_cells(self):
         return [c for c in self.cards if c.on_cell]
@@ -235,6 +243,7 @@ class Board(object):
                 positions_to_check += self.get_cards_on_cells()
             positions_to_check = sorted(positions_to_check, key=lambda c: c.pos[0], reverse=True)
 
+        log('move_hover_with_no_selection', f'positions to check: {", ".join([c.label for c in positions_to_check])}')
         if positions_to_check:
             hover = self.find_first_card_with_valid_move(positions_to_check)
             if hover:
@@ -325,9 +334,12 @@ class Board(object):
             self.hovered = self.get_last_card_in_cascade(self.hovered.col)
 
         self.selected_card = None
+        self.reset_tableaux()
 
     def reset_tableaux(self):
         """Resets tableaux for all cards"""
+        log('reset_tableaux', 'Running')
+
         for card in self.cards:
             self.set_tableau(card)
 
@@ -383,7 +395,9 @@ class Board(object):
     def set_tableau(self, card):
         # Cards on cells or foundations have no tableaux
         if card.on_cell or card.on_foundation:
-            card.tableau = []
+            if card.tableau:
+                card.tableau = []
+                log('set_tableau', f'{card.label}\'s tableau cleared due to position on cell or foundation')
 
         else:
             cards_below = self.get_cards_below_card(card)
@@ -391,6 +405,11 @@ class Board(object):
                 cards = [card] + cards_below[:n]
                 if self.is_tableau(cards):
                     card.tableau.append(cards_below[n - 1])
+                else:
+                    break
+
+        if card.tableau:
+            log('set_tableau', f'{card.label}\'s tableau: {", ".join[c.label for c in card.tableau]}')
 
     def shuffle(self):
         random.shuffle(self.cards)
