@@ -1,4 +1,5 @@
 import pygame
+import logger
 from card import Card
 from cell import Cell
 from board import Board
@@ -31,6 +32,7 @@ def main():
     screen = pygame.display.set_mode(screen_dims)
 
     controller = Controller() # Input device
+    logger.init_log()
 
     clock = pygame.time.Clock()
     fps = 0

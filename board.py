@@ -35,7 +35,7 @@ class Board(object):
 
     def find_first_card_with_valid_move(self, cards):
         for card in cards:
-            log('find_first_card_with_valid_move', f'Searching for a move for {card.label}')
+            # log('find_first_card_with_valid_move', f'Searching for a move for {card.label}')
             # Card on cell
             if card.on_cell:
                 # Can move to empty base
@@ -76,22 +76,24 @@ class Board(object):
 
             # Card in cascade, but not at the bottom
             else:
-                log('find_first_card_with_valid_move', f'{card.label} in cascade but not at bottom')
+                # log('find_first_card_with_valid_move', f'{card.label} in cascade but not at bottom')
                 if card.tableau:
                     if len(card.tableau) <= self.get_max_tableau_size():
                         # Can move to empty base
                         if self.count_empty_bases():
-                            log('find_first_card_with_valid_move', f'Move found for {card.label}: Empty base')
+                            # log('find_first_card_with_valid_move', f'Move found for {card.label}: Empty base')
                             return card
                         # Can move to bottom of another cascade
                         for bottom_card in [self.get_last_card_in_cascade(n) for n in range(1, 9)]:
                             if bottom_card.color != card.color and bottom_card.value == card.value + 1:
-                                log('find_first_card_with_valid_move', f'Move found for {card.label}: {bottom_card.label} at bottom of cascade, col {bottom_card.col}')
+                                # log('find_first_card_with_valid_move', f'Move found for {card.label}: {bottom_card.label} at bottom of cascade, col {bottom_card.col}')
                                 return card
-                    else:
-                        log('find_first_card_with_valid_move', f'{card.label}\'s tableau ({len(card.tableau)}) exceeds the maximum size ({self.get_max_tableau_size()})')
+                    # else:
+                    #     log('find_first_card_with_valid_move', f'{card.label}\'s tableau ({len(card.tableau)}) exceeds the maximum size ({self.get_max_tableau_size()})')
+                # else:
+                #     log('find_first_card_with_valid_move', f'{card.label} does not have a tableau, so cannot have a valid move')
 
-        log('find_first_card_with_valid_move', 'No move found')
+        # log('find_first_card_with_valid_move', 'No move found')
         return None
 
     def find_first_valid_position_for_selected_card(self, positions):
@@ -119,10 +121,11 @@ class Board(object):
         return [c for c in self.cells if c.vacant]
 
     def get_cards_below_card(self, card):
-        """Returns the cards below a given card, sorted by Y position,
-        low to high.
+        """Returns the cards below a given card, sorted by target Y
+        position, low to high. Using target_pos instead of pos here
+        allows this to run before deal is complete.
         """
-        return sorted([c for c in self.cards if c.col == card.col and c.pos[1] > card.pos[1]], key=lambda c:c.pos[1])
+        return sorted([c for c in self.cards if c.col == card.col and c.target_pos[1] > card.target_pos[1]], key=lambda c:c.pos[1])
 
     def get_cards_on_cells(self):
         return [c for c in self.cards if c.on_cell]
@@ -166,7 +169,7 @@ class Board(object):
         self.hovered = sorted(cards_in_cascade, key=lambda c: c.pos[1])[-1]
 
     def hover_top_foundation_card(self, suit):
-        self.hovered = sorted([c for c in cards if c.suit == suit and c.on_foundation], key=lambda c: c.value)[-1]
+        self.hovered = sorted([c for c in self.cards if c.suit == suit and c.on_foundation], key=lambda c: c.value)[-1]
 
     def initialize_card_cols(self):
         """
@@ -215,11 +218,13 @@ class Board(object):
         This fn is called when there is no card selected already.
         """
         if direction == 'up':
+            log('move_hover_with_no_selection', 'Attempting to move hover up')
             # Check cards above in current column
             positions_to_check = [c for c in self.cards if c.col == self.hovered.col and c.pos[1] < self.hovered.pos[1]]
             positions_to_check = sorted(positions_to_check, key=lambda c: c.pos[1], reverse=True)
 
         elif direction == 'right':
+            log('move_hover_with_no_selection', 'Attempting to move hover right')
             # Check cards in cascades to the right
             positions_to_check = [c for c in self.cards if c.col > self.hovered.col]
             # Check cards on foundations
@@ -231,11 +236,13 @@ class Board(object):
             positions_to_check = sorted(positions_to_check, key=lambda c: c.pos[0])
 
         elif direction == 'down':
+            log('move_hover_with_no_selection', 'Attempting to move hover down')
             # Check cards below in current column
             positions_to_check = [c for c in self.cards if c.col == self.hovered.col and c.pos[1] < self.hovered.pos[1]]
             positions_to_check = sorted(positions_to_check, key=lambda c: c.pos[1])
 
         elif direction == 'left':
+            log('move_hover_with_no_selection', 'Attempting to move hover left')
             # Check cards in cascades to the left
             positions_to_check = [c for c in self.cards if c.col < self.hovered.col]
             # Check cards on cells
@@ -243,8 +250,8 @@ class Board(object):
                 positions_to_check += self.get_cards_on_cells()
             positions_to_check = sorted(positions_to_check, key=lambda c: c.pos[0], reverse=True)
 
-        log('move_hover_with_no_selection', f'positions to check: {", ".join([c.label for c in positions_to_check])}')
         if positions_to_check:
+            log('move_hover_with_no_selection', f'positions to check: {", ".join([c.label for c in positions_to_check])}')
             hover = self.find_first_card_with_valid_move(positions_to_check)
             if hover:
                 self.hovered = hover
@@ -263,6 +270,7 @@ class Board(object):
         pointless.)
         """
         if direction == 'right':
+            log('move_hover_with_selection', 'Attempting to move hover right')
             # Check bottom cards in cascades to the right
             positions_to_check = [self.get_last_card_in_cascade(n) for n in range(self.hovered.col, 9)]
             # Check card on same-suit foundation
@@ -279,7 +287,9 @@ class Board(object):
 
             # Sort positions by column from low to high
             positions_to_check = sorted(positions_to_check, key=lambda p: p.col)
+
         elif direction == 'left':
+            log('move_hover_with_selection', 'Attempting to move hover left')
             # Check bottom cards in cascades to the left
             positions_to_check = [self.get_last_card_in_cascade(n) for n in range(1, self.hovered.col)]
             # Check empty cells
@@ -291,9 +301,11 @@ class Board(object):
             positions_to_check = sorted(positions_to_check, key=lambda p: p.col, reverse=True)
 
         if positions_to_check:
+            log('move_hover_with_selection', f'positions to check: {", ".join([c.label for c in positions_to_check])}')
             hover = self.find_first_valid_position_for_selected_card(positions_to_check)
             if hover:
                 self.hovered = hover
+                log('move_hover_with_selection', f'Hovered set to {self.hovered.label}')
 
     def place_selected_card(self):
         """
@@ -317,8 +329,14 @@ class Board(object):
             self.hovered.vacant = False
             self.hovered = self.selected_card
 
-        # On foundation, or on card on foundation
-        elif self.hovered.on_foundation or self.hovered in self.foundations:
+        # On foundation
+        elif self.hovered in self.foundations:
+            self.selected_card.on_foundation = True
+            self.selected_card.move(pos=self.hovered.pos, col=9)
+            self.hover_top_foundation_card(suit=self.hovered.suit)
+
+        # On card in foundation
+        elif self.hovered.on_foundation:
             self.selected_card.on_foundation = True
             self.selected_card.move(pos=self.hovered.pos, col=9)
             self.hover_top_foundation_card(suit=self.hovered.suit)
@@ -338,13 +356,13 @@ class Board(object):
 
     def reset_tableaux(self):
         """Resets tableaux for all cards"""
-        log('reset_tableaux', 'Running')
-
         for card in self.cards:
             self.set_tableau(card)
+        log('reset_tableaux', 'Complete')
 
     def select_hovered(self):
         self.selected_card = self.hovered
+        log('select_hovered', f'Selected hovered card {self.selected_card.label} in col {self.selected_card.col}')
         self.set_hover_from_selected()
 
     def set_cards_z_index(self):
@@ -394,22 +412,24 @@ class Board(object):
 
     def set_tableau(self, card):
         # Cards on cells or foundations have no tableaux
+        # log('set_tableau', f'Setting tableau for {card.label}')
         if card.on_cell or card.on_foundation:
             if card.tableau:
                 card.tableau = []
-                log('set_tableau', f'{card.label}\'s tableau cleared due to position on cell or foundation')
+                # log('set_tableau', f'{card.label}\'s tableau cleared due to position on cell or foundation')
 
         else:
             cards_below = self.get_cards_below_card(card)
-            for n in range(1, len(cards_below)):
-                cards = [card] + cards_below[:n]
+            # log('set_tableau', f'Cards below {card.label}: {", ".join([c.label for c in cards_below])}')
+            for n in range(len(cards_below)):
+                cards = [card] + cards_below[:n + 1]
                 if self.is_tableau(cards):
                     card.tableau.append(cards_below[n - 1])
                 else:
                     break
 
-        if card.tableau:
-            log('set_tableau', f'{card.label}\'s tableau: {", ".join[c.label for c in card.tableau]}')
+        # if card.tableau:
+        #     log('set_tableau', f'{card.label}\'s tableau: {", ".join([c.label for c in card.tableau])}')
 
     def shuffle(self):
         random.shuffle(self.cards)
