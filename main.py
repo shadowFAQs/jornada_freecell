@@ -154,7 +154,8 @@ if __name__ == '__main__':
 TODO
 ----
 
-- Bug: Can't move hover 'up' a cascade
+- Wrap L/R hover around screen
+- Hold DPAD buttons to repeat 'press' event after delay
 - Create & implement graphics for hovered cells
 - Create & implement graphics for hovered foundations
 - Create & implement graphics for hovered bases

@@ -57,18 +57,18 @@ class Card(object):
         self.target_pos = pos
         self.col = col
 
-        log('card.move', f'{self.label} moved to col {self.col}')
+        log('card.move', f'{self.label} moved to col {self.col} @ {self.pos}')
 
         self.move_tableau(col)
 
     def move_tableau(self, col):
         for i in range(len(self.tableau)):
             card = self.tableau[i]
-            card.pos = (self.pos[0], self.pos[1] + 18 + i * 18)
+            card.pos = (self.pos[0], self.pos[1] + 14 + i * 14)
             card.target_pos = card.pos
             card.col = col
 
-            log('card.move_tableau', f'(Part of tableau) {card.label} moved to col {card.col}')
+            log('card.move_tableau', f'(Part of tableau) {card.label} moved to col {card.col} @ {card.pos}')
 
     def set_label(self):
         value = self.all_values[self.value]

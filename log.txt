@@ -7,25 +7,31 @@ fn [move_hover_with_no_selection]
 	Attempting to move hover right
 
 fn [move_hover_with_no_selection]
-	positions to check: 2D, 7D, 4H, 7C, AH, KD, KH, 4S, 2S, 6D, 5S, 8C, 2C, 10H, AC, 9S, 10C, KS, 6S, 5C, AS, 6C, QD, 8S, 7H, JH, QS, 3S, 4D, 10S, JC, 8H, KC, 4C, 5H, 9D, 10D, 6H, JS, 2H, AD, 9H, 7S, JD, 9C
+	positions to check: 5D, JS, AS, 4H, 9D, AD, KC, KS, 7C, 8S, 4D, 8D, 5C, JD, 6H, 2S, QS, 3D, 8C, JH, KD, 6D, 10D, 9H, 3C, 5S, AC, AH, 7D, 10S, 10C, 6S, 2H, 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, KH
 
 fn [move_hover_with_no_selection]
 	Attempting to move hover right
 
 fn [move_hover_with_no_selection]
-	positions to check: 4S, 2S, 6D, 5S, 8C, 2C, 10H, AC, 9S, 10C, KS, 6S, 5C, AS, 6C, QD, 8S, 7H, JH, QS, 3S, 4D, 10S, JC, 8H, KC, 4C, 5H, 9D, 10D, 6H, JS, 2H, AD, 9H, 7S, JD, 9C
+	positions to check: KS, 7C, 8S, 4D, 8D, 5C, JD, 6H, 2S, QS, 3D, 8C, JH, KD, 6D, 10D, 9H, 3C, 5S, AC, AH, 7D, 10S, 10C, 6S, 2H, 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, KH
 
 fn [move_hover_with_no_selection]
 	Attempting to move hover right
 
 fn [move_hover_with_no_selection]
-	positions to check: AC, 9S, 10C, KS, 6S, 5C, AS, 6C, QD, 8S, 7H, JH, QS, 3S, 4D, 10S, JC, 8H, KC, 4C, 5H, 9D, 10D, 6H, JS, 2H, AD, 9H, 7S, JD, 9C
+	positions to check: 6H, 2S, QS, 3D, 8C, JH, KD, 6D, 10D, 9H, 3C, 5S, AC, AH, 7D, 10S, 10C, 6S, 2H, 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, KH
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+
+fn [move_hover_with_no_selection]
+	positions to check: 6D, 10D, 9H, 3C, 5S, AC, AH, 7D, 10S, 10C, 6S, 2H, 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, KH
 
 fn [select_hovered]
-	Selected hovered card AS in col 4
+	Selected hovered card AC in col 5
 
 fn [card.move]
-	AS moved to col 9
+	AC moved to col 9 @ (215, 46)
 
 fn [reset_tableaux]
 	Complete
@@ -34,4 +40,371 @@ fn [move_hover_with_no_selection]
 	Attempting to move hover left
 
 fn [move_hover_with_no_selection]
-	positions to check: 2H, AD, 9H, 7S, JD, 9C, 4C, 5H, 9D, 10D, 6H, JS, 3S, 4D, 10S, JC, 8H, KC, 6C, QD, 8S, 7H, JH, QS, AC, 9S, 10C, KS, 6S, 5C, 4S, 2S, 6D, 5S, 8C, 2C, 10H, 2D, 7D, 4H, 7C, AH, KD, KH, 3H, 3C, 3D, 8D, 5D, QH, QC
+	positions to check: 3S, QC, 3H, 7S, 2D, KH, 9C, 10H, 8H, 4S, 6C, 4C, AH, 7D, 10S, 10C, 6S, 2H, 6D, 10D, 9H, 3C, 5S, 6H, 2S, QS, 3D, 8C, JH, KD, KS, 7C, 8S, 4D, 8D, 5C, JD, 5D, JS, AS, 4H, 9D, AD, KC, 9S, 5H, JC, QH, 2C, 7H, QD
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+
+fn [move_hover_with_no_selection]
+	positions to check: 9C, 10H, 8H, 4S, 6C, 4C, AH, 7D, 10S, 10C, 6S, 2H, 6D, 10D, 9H, 3C, 5S, 6H, 2S, QS, 3D, 8C, JH, KD, KS, 7C, 8S, 4D, 8D, 5C, JD, 5D, JS, AS, 4H, 9D, AD, KC, 9S, 5H, JC, QH, 2C, 7H, QD
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+
+fn [move_hover_with_no_selection]
+	positions to check: AH, 7D, 10S, 10C, 6S, 2H, 6D, 10D, 9H, 3C, 5S, 6H, 2S, QS, 3D, 8C, JH, KD, KS, 7C, 8S, 4D, 8D, 5C, JD, 5D, JS, AS, 4H, 9D, AD, KC, 9S, 5H, JC, QH, 2C, 7H, QD
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+
+fn [move_hover_with_no_selection]
+	positions to check: 6D, 10D, 9H, 3C, 5S, 6H, 2S, QS, 3D, 8C, JH, KD, KS, 7C, 8S, 4D, 8D, 5C, JD, 5D, JS, AS, 4H, 9D, AD, KC, 9S, 5H, JC, QH, 2C, 7H, QD
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+
+fn [move_hover_with_no_selection]
+	positions to check: 6H, 2S, QS, 3D, 8C, JH, KD, KS, 7C, 8S, 4D, 8D, 5C, JD, 5D, JS, AS, 4H, 9D, AD, KC, 9S, 5H, JC, QH, 2C, 7H, QD
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+
+fn [move_hover_with_no_selection]
+	positions to check: KS, 7C, 8S, 4D, 8D, 5C, JD, 5D, JS, AS, 4H, 9D, AD, KC, 9S, 5H, JC, QH, 2C, 7H, QD
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+
+fn [move_hover_with_no_selection]
+	positions to check: 5D, JS, AS, 4H, 9D, AD, KC, 9S, 5H, JC, QH, 2C, 7H, QD
+	Selected hovered card KC in col 2
+
+fn [card.move]
+	KC moved to col 0 @ (7, 6)
+
+fn [reset_tableaux]
+	Complete
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+
+fn [move_hover_with_no_selection]
+	positions to check: 9S, 5H, JC, QH, 2C, 7H, QD, 5D, JS, AS, 4H, 9D, AD, KS, 7C, 8S, 4D, 8D, 5C, JD, 6H, 2S, QS, 3D, 8C, JH, KD, 6D, 10D, 9H, 3C, 5S, AH, 7D, 10S, 10C, 6S, 2H, 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, KH, AC, AC
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+
+fn [move_hover_with_no_selection]
+	positions to check: 5D, JS, AS, 4H, 9D, AD, KS, 7C, 8S, 4D, 8D, 5C, JD, 6H, 2S, QS, 3D, 8C, JH, KD, 6D, 10D, 9H, 3C, 5S, AH, 7D, 10S, 10C, 6S, 2H, 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, KH, AC, AC
+	Selected hovered card AD in col 2
+
+fn [card.move]
+	AD moved to col 9 @ (215, 86)
+
+fn [reset_tableaux]
+	Complete
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+
+fn [move_hover_with_no_selection]
+	positions to check: 3S, QC, 3H, 7S, 2D, KH, 9C, 10H, 8H, 4S, 6C, 4C, AH, 7D, 10S, 10C, 6S, 2H, 6D, 10D, 9H, 3C, 5S, 6H, 2S, QS, 3D, 8C, JH, KD, KS, 7C, 8S, 4D, 8D, 5C, JD, 5D, JS, AS, 4H, 9D, 9S, 5H, JC, QH, 2C, 7H, QD, KC, KC
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+
+fn [move_hover_with_no_selection]
+	positions to check: 9C, 10H, 8H, 4S, 6C, 4C, AH, 7D, 10S, 10C, 6S, 2H, 6D, 10D, 9H, 3C, 5S, 6H, 2S, QS, 3D, 8C, JH, KD, KS, 7C, 8S, 4D, 8D, 5C, JD, 5D, JS, AS, 4H, 9D, 9S, 5H, JC, QH, 2C, 7H, QD, KC, KC
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+
+fn [move_hover_with_no_selection]
+	positions to check: AH, 7D, 10S, 10C, 6S, 2H, 6D, 10D, 9H, 3C, 5S, 6H, 2S, QS, 3D, 8C, JH, KD, KS, 7C, 8S, 4D, 8D, 5C, JD, 5D, JS, AS, 4H, 9D, 9S, 5H, JC, QH, 2C, 7H, QD, KC, KC
+	Selected hovered card 2H in col 6
+
+fn [card.move]
+	2H moved to col 0 @ (7, 46)
+
+fn [reset_tableaux]
+	Complete
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover down
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+
+fn [move_hover_with_no_selection]
+	positions to check: 9S, 5H, JC, QH, 2C, 7H, QD, 5D, JS, AS, 4H, 9D, KS, 7C, 8S, 4D, 8D, 5C, JD, 6H, 2S, QS, 3D, 8C, JH, KD, 6D, 10D, 9H, 3C, 5S, AH, 7D, 10S, 10C, 6S, 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, KH, AD, AC, AC, AD
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover up
+
+fn [move_hover_with_no_selection]
+	positions to check: 7H, 2C, QH, JC, 5H, 9S
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+
+fn [move_hover_with_no_selection]
+	positions to check: 5D, JS, AS, 4H, 9D, KS, 7C, 8S, 4D, 8D, 5C, JD, 6H, 2S, QS, 3D, 8C, JH, KD, 6D, 10D, 9H, 3C, 5S, AH, 7D, 10S, 10C, 6S, 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, KH, AD, AC, AC, AD
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+
+fn [move_hover_with_no_selection]
+	positions to check: 9S, 5H, JC, QH, 2C, 7H, QD, 2H, KC, 2H, KC
+	Selected hovered card QD in col 1
+
+fn [card.move]
+	QD moved to col 0 @ (7, 86)
+
+fn [reset_tableaux]
+	Complete
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+
+fn [move_hover_with_no_selection]
+	positions to check: 9S, 5H, JC, QH, 2C, 7H, 5D, JS, AS, 4H, 9D, KS, 7C, 8S, 4D, 8D, 5C, JD, 6H, 2S, QS, 3D, 8C, JH, KD, 6D, 10D, 9H, 3C, 5S, AH, 7D, 10S, 10C, 6S, 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, KH, AD, AC, AC, AD
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+
+fn [move_hover_with_no_selection]
+	positions to check: 5D, JS, AS, 4H, 9D, KS, 7C, 8S, 4D, 8D, 5C, JD, 6H, 2S, QS, 3D, 8C, JH, KD, 6D, 10D, 9H, 3C, 5S, AH, 7D, 10S, 10C, 6S, 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, KH, AD, AC, AC, AD
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+
+fn [move_hover_with_no_selection]
+	positions to check: KS, 7C, 8S, 4D, 8D, 5C, JD, 6H, 2S, QS, 3D, 8C, JH, KD, 6D, 10D, 9H, 3C, 5S, AH, 7D, 10S, 10C, 6S, 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, KH, AD, AC, AC, AD
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+
+fn [move_hover_with_no_selection]
+	positions to check: 6H, 2S, QS, 3D, 8C, JH, KD, 6D, 10D, 9H, 3C, 5S, AH, 7D, 10S, 10C, 6S, 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, KH, AD, AC, AC, AD
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+
+fn [move_hover_with_no_selection]
+	positions to check: 6D, 10D, 9H, 3C, 5S, AH, 7D, 10S, 10C, 6S, 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, KH, AD, AC, AC, AD
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+
+fn [move_hover_with_no_selection]
+	positions to check: AH, 7D, 10S, 10C, 6S, 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, KH, AD, AC, AC, AD
+	Selected hovered card 6S in col 6
+
+fn [card.move]
+	6S moved to col 1 @ (32, 90)
+
+fn [set_tableau]
+	7H's tableau: 6S
+
+fn [reset_tableaux]
+	Complete
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+
+fn [move_hover_with_no_selection]
+	positions to check: 5D, JS, AS, 4H, 9D, KS, 7C, 8S, 4D, 8D, 5C, JD, 6H, 2S, QS, 3D, 8C, JH, KD, 6D, 10D, 9H, 3C, 5S, AH, 7D, 10S, 10C, 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, KH, AD, AC, AC, AD
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+
+fn [move_hover_with_no_selection]
+	positions to check: KS, 7C, 8S, 4D, 8D, 5C, JD, 6H, 2S, QS, 3D, 8C, JH, KD, 6D, 10D, 9H, 3C, 5S, AH, 7D, 10S, 10C, 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, KH, AD, AC, AC, AD
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+
+fn [move_hover_with_no_selection]
+	positions to check: 6H, 2S, QS, 3D, 8C, JH, KD, 6D, 10D, 9H, 3C, 5S, AH, 7D, 10S, 10C, 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, KH, AD, AC, AC, AD
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+
+fn [move_hover_with_no_selection]
+	positions to check: 6D, 10D, 9H, 3C, 5S, AH, 7D, 10S, 10C, 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, KH, AD, AC, AC, AD
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+
+fn [move_hover_with_no_selection]
+	positions to check: AH, 7D, 10S, 10C, 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, KH, AD, AC, AC, AD
+
+fn [select_hovered]
+	Selected hovered card 10C in col 6
+
+fn [card.move]
+	10C moved to col 3 @ (76, 104)
+	7H's tableau: 6S
+	JD's tableau: 10C
+
+fn [reset_tableaux]
+	Complete
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+
+fn [move_hover_with_no_selection]
+	positions to check: 5D, JS, AS, 4H, 9D, 9S, 5H, JC, QH, 2C, 7H, 6S, QD, 2H, KC, QD, 2H, KC
+
+fn [select_hovered]
+	Selected hovered card 9D in col 2
+
+fn [card.move]
+	9D moved to col 3 @ (76, 118)
+	7H's tableau: 6S
+	JD's tableau: 10C, 9D
+	10C's tableau: 9D
+
+fn [reset_tableaux]
+	Complete
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+
+fn [move_hover_with_no_selection]
+	positions to check: 5D, JS, AS, 4H, 9S, 5H, JC, QH, 2C, 7H, 6S, QD, 2H, KC, QD, 2H, KC
+
+fn [select_hovered]
+	Selected hovered card 4H in col 2
+
+fn [card.move]
+	4H moved to col 5 @ (120, 76)
+	5S's tableau: 4H
+	7H's tableau: 6S
+	JD's tableau: 10C, 9D
+	10C's tableau: 9D
+
+fn [reset_tableaux]
+	Complete
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+
+fn [move_hover_with_no_selection]
+	positions to check: 6H, 2S, QS, 3D, 8C, JH, KD, KS, 7C, 8S, 4D, 8D, 5C, JD, 10C, 9D, 5D, JS, AS, 9S, 5H, JC, QH, 2C, 7H, 6S, QD, 2H, KC, QD, 2H, KC
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+
+fn [move_hover_with_no_selection]
+	positions to check: KS, 7C, 8S, 4D, 8D, 5C, JD, 10C, 9D, 5D, JS, AS, 9S, 5H, JC, QH, 2C, 7H, 6S, QD, 2H, KC, QD, 2H, KC
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+
+fn [move_hover_with_no_selection]
+	positions to check: 5D, JS, AS, 9S, 5H, JC, QH, 2C, 7H, 6S, QD, 2H, KC, QD, 2H, KC
+
+fn [select_hovered]
+	Selected hovered card AS in col 2
+
+fn [card.move]
+	AS moved to col 9 @ (215, 6)
+	5S's tableau: 4H
+	7H's tableau: 6S
+	JD's tableau: 10C, 9D
+	10C's tableau: 9D
+
+fn [reset_tableaux]
+	Complete
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+
+fn [move_hover_with_no_selection]
+	positions to check: 3S, QC, 3H, 7S, 2D, KH, 9C, 10H, 8H, 4S, 6C, 4C, AH, 7D, 10S, 6D, 10D, 9H, 3C, 5S, 4H, 6H, 2S, QS, 3D, 8C, JH, KD, KS, 7C, 8S, 4D, 8D, 5C, JD, 10C, 9D, 5D, JS, 9S, 5H, JC, QH, 2C, 7H, 6S, QD, 2H, KC, QD, 2H, KC
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+
+fn [move_hover_with_no_selection]
+	positions to check: 9C, 10H, 8H, 4S, 6C, 4C, AH, 7D, 10S, 6D, 10D, 9H, 3C, 5S, 4H, 6H, 2S, QS, 3D, 8C, JH, KD, KS, 7C, 8S, 4D, 8D, 5C, JD, 10C, 9D, 5D, JS, 9S, 5H, JC, QH, 2C, 7H, 6S, QD, 2H, KC, QD, 2H, KC
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+
+fn [move_hover_with_no_selection]
+	positions to check: AH, 7D, 10S, 6D, 10D, 9H, 3C, 5S, 4H, 6H, 2S, QS, 3D, 8C, JH, KD, KS, 7C, 8S, 4D, 8D, 5C, JD, 10C, 9D, 5D, JS, 9S, 5H, JC, QH, 2C, 7H, 6S, QD, 2H, KC, QD, 2H, KC
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+
+fn [move_hover_with_no_selection]
+	positions to check: 6D, 10D, 9H, 3C, 5S, 4H, 6H, 2S, QS, 3D, 8C, JH, KD, KS, 7C, 8S, 4D, 8D, 5C, JD, 10C, 9D, 5D, JS, 9S, 5H, JC, QH, 2C, 7H, 6S, QD, 2H, KC, QD, 2H, KC
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+
+fn [move_hover_with_no_selection]
+	positions to check: AH, 7D, 10S, 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, KH, AS, AD, AC, AS, AC, AD
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+
+fn [move_hover_with_no_selection]
+	positions to check: 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, KH, AS, AD, AC, AS, AC, AD
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+
+fn [move_hover_with_no_selection]
+	positions to check: AH, 7D, 10S, 6D, 10D, 9H, 3C, 5S, 4H, 6H, 2S, QS, 3D, 8C, JH, KD, KS, 7C, 8S, 4D, 8D, 5C, JD, 10C, 9D, 5D, JS, 9S, 5H, JC, QH, 2C, 7H, 6S, QD, 2H, KC, QD, 2H, KC
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+
+fn [move_hover_with_no_selection]
+	positions to check: 6D, 10D, 9H, 3C, 5S, 4H, 6H, 2S, QS, 3D, 8C, JH, KD, KS, 7C, 8S, 4D, 8D, 5C, JD, 10C, 9D, 5D, JS, 9S, 5H, JC, QH, 2C, 7H, 6S, QD, 2H, KC, QD, 2H, KC
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+
+fn [move_hover_with_no_selection]
+	positions to check: AH, 7D, 10S, 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, KH, AS, AD, AC, AS, AC, AD
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+
+fn [move_hover_with_no_selection]
+	positions to check: 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, KH, AS, AD, AC, AS, AC, AD
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+
+fn [move_hover_with_no_selection]
+	positions to check: 3S, QC, 3H, 7S, 2D, KH, AS, AD, AC, AS, AC, AD
+
+fn [select_hovered]
+	Selected hovered card KH in col 8
+
+fn [card.move]
+	KH moved to col 0 @ (7, 126)
+	5S's tableau: 4H
+	7H's tableau: 6S
+	JD's tableau: 10C, 9D
+	10C's tableau: 9D
+
+fn [reset_tableaux]
+	Complete
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+
+fn [move_hover_with_no_selection]
+	positions to check: 9S, 5H, JC, QH, 2C, 7H, 6S, 5D, JS, KS, 7C, 8S, 4D, 8D, 5C, JD, 10C, 9D, 6H, 2S, QS, 3D, 8C, JH, KD, 6D, 10D, 9H, 3C, 5S, 4H, AH, 7D, 10S, 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, AS, AD, AC, AS, AC, AD
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+
+fn [move_hover_with_no_selection]
+	positions to check: 6H, 2S, QS, 3D, 8C, JH, KD, 6D, 10D, 9H, 3C, 5S, 4H, AH, 7D, 10S, 9C, 10H, 8H, 4S, 6C, 4C, 3S, QC, 3H, 7S, 2D, AS, AD, AC, AS, AC, AD

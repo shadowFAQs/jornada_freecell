@@ -85,9 +85,10 @@ class Board(object):
                             return card
                         # Can move to bottom of another cascade
                         for bottom_card in [self.get_last_card_in_cascade(n) for n in range(1, 9)]:
-                            if bottom_card.color != card.color and bottom_card.value == card.value + 1:
-                                # log('find_first_card_with_valid_move', f'Move found for {card.label}: {bottom_card.label} at bottom of cascade, col {bottom_card.col}')
-                                return card
+                            if bottom_card: # Handle cascades with no cards
+                                if bottom_card.color != card.color and bottom_card.value == card.value + 1:
+                                    # log('find_first_card_with_valid_move', f'Move found for {card.label}: {bottom_card.label} at bottom of cascade, col {bottom_card.col}')
+                                    return card
                     # else:
                     #     log('find_first_card_with_valid_move', f'{card.label}\'s tableau ({len(card.tableau)}) exceeds the maximum size ({self.get_max_tableau_size()})')
                 # else:
@@ -238,7 +239,7 @@ class Board(object):
         elif direction == 'down':
             log('move_hover_with_no_selection', 'Attempting to move hover down')
             # Check cards below in current column
-            positions_to_check = [c for c in self.cards if c.col == self.hovered.col and c.pos[1] < self.hovered.pos[1]]
+            positions_to_check = [c for c in self.cards if c.col == self.hovered.col and c.pos[1] > self.hovered.pos[1]]
             positions_to_check = sorted(positions_to_check, key=lambda c: c.pos[1])
 
         elif direction == 'left':
@@ -314,7 +315,7 @@ class Board(object):
         """
         if self.selected_card.on_cell:
             # Clear 'card' prop from cell that selected_card moved from
-            cell = [c for c in self.cells if c.card == self.selected_card]
+            cell = [c for c in self.cells if c.card == self.selected_card][0]
             cell.card = None
             cell.vacant = True
 
@@ -413,23 +414,21 @@ class Board(object):
     def set_tableau(self, card):
         # Cards on cells or foundations have no tableaux
         # log('set_tableau', f'Setting tableau for {card.label}')
-        if card.on_cell or card.on_foundation:
-            if card.tableau:
-                card.tableau = []
-                # log('set_tableau', f'{card.label}\'s tableau cleared due to position on cell or foundation')
+        card.tableau = []
+        cards_below = self.get_cards_below_card(card)
+        # log('set_tableau', f'Cards below {card.label}: {", ".join([c.label for c in cards_below])}')
+        for n in range(len(cards_below)):
+            cards = [card] + cards_below[:n + 1]
+            if self.is_tableau(cards):
+                card.tableau.append(cards_below[n])
+            else:
+                break
 
-        else:
-            cards_below = self.get_cards_below_card(card)
-            # log('set_tableau', f'Cards below {card.label}: {", ".join([c.label for c in cards_below])}')
-            for n in range(len(cards_below)):
-                cards = [card] + cards_below[:n + 1]
-                if self.is_tableau(cards):
-                    card.tableau.append(cards_below[n - 1])
-                else:
-                    break
-
-        # if card.tableau:
-        #     log('set_tableau', f'{card.label}\'s tableau: {", ".join([c.label for c in card.tableau])}')
+        # Sort tableau by descending value; this allows card.move() to
+        # set Y positions for tableaux accurately
+        if card.tableau:
+            card.tableau = sorted(card.tableau, key=lambda c: c.value, reverse=True)
+            log('set_tableau', f'{card.label}\'s tableau: {", ".join([c.label for c in card.tableau])}')
 
     def shuffle(self):
         random.shuffle(self.cards)
