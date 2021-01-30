@@ -37,6 +37,10 @@ class Board(object):
         self.selected_card = None
 
     def find_first_card_with_valid_move(self, cards):
+        """
+        Returns the first card in cards that can move somewhere, or
+        None. This is used to place hover.
+        """
         for card in cards:
             # log('find_first_card_with_valid_move', f'Searching for a move for {card.label}')
             # Card on cell
@@ -107,9 +111,28 @@ class Board(object):
                 if self.selected_card.value == 1:
                     return position
 
-            # Empty cell or base
-            if position in self.cells or position in self.bases:
-                return position
+            # Empty cell
+            if position in self.cells:
+                """
+                Even though we check tableau size before moving hover
+                to a card in find_first_card_with_valid_move(), we
+                need to check again here for the case where a card
+                with a tableau does have a valid move, but there is
+                also a free cell; so a move to the cell must be
+                disallowed in this case.
+                """
+                if not self.selected_card.tableau:
+                    return position
+                else:
+                    # Conditionals below this hinge on non-cell
+                    # properties like on_foundation, so we need to
+                    # move on to the next position at this point.
+                    continue
+
+            # Empty base
+            if position in self.bases:
+                if len(self.selected_card.tableau) < self.get_max_tableau_size():
+                    return position
 
             # Same-suit card on foundation (suit check already done)
             if position.on_foundation and position.value == self.selected_card.value - 1:
