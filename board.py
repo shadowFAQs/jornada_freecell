@@ -230,7 +230,7 @@ class Board(object):
         elif direction == 'right':
             log('move_hover_with_no_selection', 'Attempting to move hover right')
             # Check cards in cascades to the right
-            positions_to_check = [c for c in self.cards if c.col > self.hovered.col]
+            positions_to_check = [c for c in self.cards if c.col > self.hovered.col and len(c.tableau) == len(self.get_cards_below_card(c))]
             # Check cards on foundations
             if self.hovered.col < 9:
                 for suit in self.all_suits:
