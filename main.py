@@ -176,6 +176,7 @@ if __name__ == '__main__':
 TODO
 ----
 
+- Add ability to move up and down among top foundation cards
 - Wrap L/R hover moves around screen
 - After moving a card to a foundation, set hover back to the last card in the column the card came from (if it has a move; if not, the next closest one)
 - Create & implement graphics for hovered cells
