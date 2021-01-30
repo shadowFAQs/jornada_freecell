@@ -259,6 +259,7 @@ class Board(object):
             hover = self.find_first_card_with_valid_move(positions_to_check)
             if hover:
                 self.hovered = hover
+                log('move_hover_with_no_selection', f'Hovered is now {self.hovered.label} in col {self.hovered.col}')
 
     def move_hover_with_selection(self, direction):
         """
@@ -276,7 +277,7 @@ class Board(object):
         if direction == 'right':
             log('move_hover_with_selection', 'Attempting to move hover right')
             # Check bottom cards in cascades to the right
-            positions_to_check = [self.get_last_card_in_cascade(n) for n in range(self.hovered.col, 9)]
+            positions_to_check = [self.get_last_card_in_cascade(n) for n in range(max(self.hovered.col, 1), 9)]
             # Check card on same-suit foundation
             if self.hovered.col < 9:
                 foundation_card = self.get_top_card_on_foundation(self.selected_card.suit)
@@ -285,7 +286,8 @@ class Board(object):
                 else:
                     # Check empty foundation (if moving an Ace)
                     if self.selected_card.value == 1:
-                        positions_to_check.append([f for f in self.foundations if f.suit == self.selected_card.suit])
+                        log('move_hover_with_selection', 'Special logic: selected card is an Ace')
+                        positions_to_check += [f for f in self.foundations if f.suit == self.selected_card.suit]
             # Check empty bases
             positions_to_check += [b for b in self.bases if b.vacant and b.col > self.hovered.col]
 
@@ -310,7 +312,7 @@ class Board(object):
             if hover:
                 self.hovered = hover
                 self.set_hover_marker_positions()
-                log('move_hover_with_selection', f'Hovered set to {self.hovered.label}')
+                log('move_hover_with_selection', f'Hovered is now {self.hovered.label} in col {self.hovered.col}')
 
     def place_selected_card(self):
         """
@@ -370,6 +372,7 @@ class Board(object):
         log('select_hovered', f'Selected hovered card {self.selected_card.label} in col {self.selected_card.col}')
         self.set_hover_from_selected()
         self.set_hover_marker_positions()
+        log('select_hovered', f'Hovered is now {self.hovered.label} in col {self.hovered.col}')
 
     def set_cards_z_index(self):
         """

@@ -19,7 +19,7 @@ class Cell(object):
             # Anchor point for cell 0 is (7, 6)
             # Cells are 40px apart
             self.card = None
-            self.label = f'cell #{col}'
+            self.label = f'cell #{pos}'
             self.pos = (7, 6 + pos * 40)
 
         elif cell_type == 'foundation':
