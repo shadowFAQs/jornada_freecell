@@ -155,7 +155,6 @@ if __name__ == '__main__':
 TODO
 ----
 
-- Bug: Can move tableau to cell
 - Wrap L/R hover moves around screen
 - After moving a card to a foundation, set hover back to the last card in the column the card came from (if it has a move; if not, the next closest one)
 - Hold DPAD buttons to repeat 'press' event after delay

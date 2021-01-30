@@ -247,7 +247,7 @@ class Board(object):
         if direction == 'up':
             log('move_hover_with_no_selection', 'Attempting to move hover up')
             # Check cards above in current column
-            positions_to_check = [c for c in self.cards if c.col == self.hovered.col and c.pos[1] < self.hovered.pos[1]]
+            positions_to_check = [c for c in self.cards if c.col == self.hovered.col and c.pos[1] < self.hovered.pos[1] and len(c.tableau) == len(self.get_cards_below_card(c))]
             positions_to_check = sorted(positions_to_check, key=lambda c: c.pos[1], reverse=True)
 
         elif direction == 'right':
@@ -271,7 +271,7 @@ class Board(object):
         elif direction == 'left':
             log('move_hover_with_no_selection', 'Attempting to move hover left')
             # Check cards in cascades to the left
-            positions_to_check = [c for c in self.cards if c.col < self.hovered.col]
+            positions_to_check = [c for c in self.cards if c.col < self.hovered.col and len(c.tableau) == len(self.get_cards_below_card(c))]
             # Check cards on cells
             if self.hovered.col > 0:
                 positions_to_check += self.get_cards_on_cells()
