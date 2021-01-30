@@ -32,11 +32,16 @@ def main():
     screen = pygame.display.set_mode(screen_dims)
 
     controller = Controller() # Input device
+    held_dpad_direction = None
+    dpad_repeat_event = pygame.USEREVENT + 0
+    dpad_repeat_start_delay = 250
+    dpad_repeat_delay = 50
+
     logger.init_log()
 
     clock = pygame.time.Clock()
     fps = 0
-    deal_event = pygame.USEREVENT + 0
+    deal_event = pygame.USEREVENT + 1
 
     c_transparent = pygame.Color('#ff00ff')
 
@@ -89,6 +94,15 @@ def main():
             elif event.type == deal_event:
                 board.deal(deal_event)
 
+            elif event.type == dpad_repeat_event:
+                try:
+                    held_dpad_button = [b for b in controller.dpad if b['pressed']][0]
+                    direction = held_dpad_button['name'].split(' ')[-1].lower()
+                    board.handle_move_hover(direction=direction)
+                    pygame.time.set_timer(dpad_repeat_event, dpad_repeat_delay, True)
+                except IndexError:
+                    held_dpad_direction = None
+
             elif event.type in (pygame.KEYDOWN, pygame.KEYUP):
                 input_event = None
                 if INPUT_ENABLED:
@@ -109,12 +123,19 @@ def main():
 
                 elif input_event == 'D-PAD UP press':
                     board.handle_move_hover(direction='up')
+                    pygame.time.set_timer(dpad_repeat_event, dpad_repeat_start_delay, True)
                 elif input_event == 'D-PAD RIGHT press':
                     board.handle_move_hover(direction='right')
+                    pygame.time.set_timer(dpad_repeat_event, dpad_repeat_start_delay, True)
                 elif input_event == 'D-PAD DOWN press':
                     board.handle_move_hover(direction='down')
+                    pygame.time.set_timer(dpad_repeat_event, dpad_repeat_start_delay, True)
                 elif input_event == 'D-PAD LEFT press':
                     board.handle_move_hover(direction='left')
+                    pygame.time.set_timer(dpad_repeat_event, dpad_repeat_start_delay, True)
+
+                elif input_event in ('D-PAD UP release', 'D-PAD RIGHT release', 'D-PAD DOWN release', 'D-PAD LEFT release'):
+                    held_dpad_direction = None
 
                 elif input_event == 'SPACE press':
                     toggle_menu()
@@ -157,7 +178,6 @@ TODO
 
 - Wrap L/R hover moves around screen
 - After moving a card to a foundation, set hover back to the last card in the column the card came from (if it has a move; if not, the next closest one)
-- Hold DPAD buttons to repeat 'press' event after delay
 - Create & implement graphics for hovered cells
 - Create & implement graphics for hovered foundations
 - Create & implement graphics for hovered bases

@@ -43,6 +43,7 @@ class Controller(object):
         }
 
         self.buttons = (self.btn_a, self.btn_b, self.btn_dpad_u, self.btn_dpad_r, self.btn_dpad_d, self.btn_dpad_l)
+        self.dpad = (self.btn_dpad_u, self.btn_dpad_r, self.btn_dpad_d, self.btn_dpad_l)
 
     def get_action_button(self, event):
         if event.type == pygame.KEYDOWN:
