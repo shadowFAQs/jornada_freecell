@@ -1,420 +1,578 @@
 
 
 fn [set_tableau]
-	6C's tableau: 5D
+	7D's tableau: 6C
+	QD's tableau: JC
 
 fn [reset_tableaux]
 	Complete
 
 fn [move_hover_with_no_selection]
 	Attempting to move hover right
-	positions to check: 4C, QC, 10C, 4H, JS, 7S, QH
-	Hovered is now 4C in col 2
+	positions to check: 2H, 6H, 9C, 5H, JS, KC, 7S
+	Hovered is now 2H in col 2
 	Attempting to move hover right
-	positions to check: QC, 10C, 4H, JS, 7S, QH
-	Hovered is now QC in col 3
+	positions to check: 6H, 9C, 5H, JS, KC, 7S
+	Hovered is now 6H in col 3
 	Attempting to move hover right
-	positions to check: 10C, 4H, JS, 7S, QH
-	Hovered is now 10C in col 4
+	positions to check: 9C, 5H, JS, KC, 7S
+	Hovered is now 9C in col 4
 	Attempting to move hover right
-	positions to check: 4H, JS, 7S, QH
-	Hovered is now 4H in col 5
+	positions to check: 5H, JS, KC, 7S
+	Hovered is now 5H in col 5
 	Attempting to move hover right
-	positions to check: JS, 7S, QH
+	positions to check: JS, KC, 7S
 	Hovered is now JS in col 6
-	Attempting to move hover right
-	positions to check: 7S, QH
-	Hovered is now 7S in col 7
-	Attempting to move hover right
-	positions to check: QH
-	Hovered is now QH in col 8
-	Attempting to move hover left
-	positions to check: 7S, JS, 4H, 10C, QC, 4C, 9C
-	Hovered is now 7S in col 7
-	Attempting to move hover left
-	positions to check: JS, 4H, 10C, QC, 4C, 9C
-	Hovered is now JS in col 6
-	Attempting to move hover left
-	positions to check: 4H, 10C, QC, 4C, 9C
-	Hovered is now 4H in col 5
-	Attempting to move hover left
-	positions to check: 10C, QC, 4C, 9C
-	Hovered is now 10C in col 4
-	Attempting to move hover left
-	positions to check: QC, 4C, 9C
-	Hovered is now QC in col 3
-	Attempting to move hover left
-	positions to check: 4C, 9C
-	Hovered is now 4C in col 2
-	Attempting to move hover right
-	positions to check: QC, 10C, 4H, JS, 7S, QH
-	Hovered is now QC in col 3
-	Attempting to move hover right
-	positions to check: 10C, 4H, JS, 7S, QH
-	Hovered is now 10C in col 4
-	Attempting to move hover right
-	positions to check: 4H, JS, 7S, QH
-	Hovered is now 4H in col 5
-	Attempting to move hover right
-	positions to check: JS, 7S, QH
-	Hovered is now JS in col 6
-	Attempting to move hover left
-	positions to check: 4H, 10C, QC, 4C, 9C
-	Hovered is now 4H in col 5
-	Attempting to move hover left
-	positions to check: 10C, QC, 4C, 9C
-	Hovered is now 10C in col 4
-	Attempting to move hover left
-	positions to check: QC, 4C, 9C
-	Hovered is now QC in col 3
-	Attempting to move hover left
-	positions to check: 4C, 9C
-	Hovered is now 4C in col 2
-	Attempting to move hover left
-	positions to check: 9C
-	Hovered is now 9C in col 1
-	Attempting to move hover left
-	Attempting to move hover right
-	positions to check: 4C, QC, 10C, 4H, JS, 7S, QH
-	Hovered is now 4C in col 2
-	Attempting to move hover right
-	positions to check: QC, 10C, 4H, JS, 7S, QH
-	Hovered is now QC in col 3
-	Attempting to move hover right
-	positions to check: 10C, 4H, JS, 7S, QH
-	Hovered is now 10C in col 4
-	Attempting to move hover right
-	positions to check: 4H, JS, 7S, QH
-	Hovered is now 4H in col 5
-	Attempting to move hover right
-	positions to check: JS, 7S, QH
-	Hovered is now JS in col 6
-	Attempting to move hover right
-	positions to check: 7S, QH
-	Hovered is now 7S in col 7
-	Attempting to move hover right
-	positions to check: QH
-	Hovered is now QH in col 8
-	Attempting to move hover left
-	positions to check: 7S, JS, 4H, 10C, QC, 4C, 9C
-	Hovered is now 7S in col 7
-	Attempting to move hover left
-	positions to check: JS, 4H, 10C, QC, 4C, 9C
-	Hovered is now JS in col 6
-	Attempting to move hover left
-	positions to check: 4H, 10C, QC, 4C, 9C
-	Hovered is now 4H in col 5
-	Attempting to move hover left
-	positions to check: 10C, QC, 4C, 9C
-	Hovered is now 10C in col 4
-	Attempting to move hover left
-	positions to check: QC, 4C, 9C
-	Hovered is now QC in col 3
-	Attempting to move hover left
-	positions to check: 4C, 9C
-	Hovered is now 4C in col 2
-	Attempting to move hover left
-	positions to check: 9C
-	Hovered is now 9C in col 1
-	Attempting to move hover left
-	Attempting to move hover left
-	Attempting to move hover left
-	Attempting to move hover left
-	Attempting to move hover left
-	Attempting to move hover left
-	Attempting to move hover left
-	Attempting to move hover right
-	positions to check: 4C, QC, 10C, 4H, JS, 7S, QH
-	Hovered is now 4C in col 2
-	Attempting to move hover right
-	positions to check: QC, 10C, 4H, JS, 7S, QH
-	Hovered is now QC in col 3
-	Attempting to move hover right
-	positions to check: 10C, 4H, JS, 7S, QH
-	Hovered is now 10C in col 4
-	Attempting to move hover right
-	positions to check: 4H, JS, 7S, QH
-	Hovered is now 4H in col 5
-	Attempting to move hover right
-	positions to check: JS, 7S, QH
-	Hovered is now JS in col 6
-	Attempting to move hover right
-	positions to check: 7S, QH
-	Hovered is now 7S in col 7
-	Attempting to move hover right
-	positions to check: QH
-	Hovered is now QH in col 8
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover left
-	positions to check: 7S, JS, 4H, 10C, QC, 4C, 9C
-	Hovered is now 7S in col 7
-	Attempting to move hover right
-	positions to check: QH
-	Hovered is now QH in col 8
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover left
-	positions to check: 7S, JS, 4H, 10C, QC, 4C, 9C
-	Hovered is now 7S in col 7
-	Attempting to move hover left
-	positions to check: JS, 4H, 10C, QC, 4C, 9C
-	Hovered is now JS in col 6
-	Attempting to move hover left
-	positions to check: 4H, 10C, QC, 4C, 9C
-	Hovered is now 4H in col 5
-	Attempting to move hover left
-	positions to check: 10C, QC, 4C, 9C
-	Hovered is now 10C in col 4
-	Attempting to move hover left
-	positions to check: QC, 4C, 9C
-	Hovered is now QC in col 3
-	Attempting to move hover left
-	positions to check: 4C, 9C
-	Hovered is now 4C in col 2
-	Attempting to move hover right
-	positions to check: QC, 10C, 4H, JS, 7S, QH
-	Hovered is now QC in col 3
-	Attempting to move hover right
-	positions to check: 10C, 4H, JS, 7S, QH
-	Hovered is now 10C in col 4
-	Attempting to move hover right
-	positions to check: 4H, JS, 7S, QH
-	Hovered is now 4H in col 5
-	Attempting to move hover right
-	positions to check: JS, 7S, QH
-	Hovered is now JS in col 6
-	Attempting to move hover right
-	positions to check: 7S, QH
-	Hovered is now 7S in col 7
-	Attempting to move hover right
-	positions to check: QH
-	Hovered is now QH in col 8
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover left
-	positions to check: 7S, JS, 4H, 10C, QC, 4C, 9C
-	Hovered is now 7S in col 7
-	Attempting to move hover left
-	positions to check: JS, 4H, 10C, QC, 4C, 9C
-	Hovered is now JS in col 6
-	Attempting to move hover left
-	positions to check: 4H, 10C, QC, 4C, 9C
-	Hovered is now 4H in col 5
-	Attempting to move hover left
-	positions to check: 10C, QC, 4C, 9C
-	Hovered is now 10C in col 4
-	Attempting to move hover left
-	positions to check: QC, 4C, 9C
-	Hovered is now QC in col 3
-	Attempting to move hover left
-	positions to check: 4C, 9C
-	Hovered is now 4C in col 2
-	Attempting to move hover left
-	positions to check: 9C
-	Hovered is now 9C in col 1
-	Attempting to move hover left
-	Attempting to move hover left
-	Attempting to move hover left
-	Attempting to move hover right
-	positions to check: 4C, QC, 10C, 4H, JS, 7S, QH
-	Hovered is now 4C in col 2
-	Attempting to move hover right
-	positions to check: QC, 10C, 4H, JS, 7S, QH
-	Hovered is now QC in col 3
-	Attempting to move hover right
-	positions to check: 10C, 4H, JS, 7S, QH
-	Hovered is now 10C in col 4
-	Attempting to move hover right
-	positions to check: 4H, JS, 7S, QH
-	Hovered is now 4H in col 5
-	Attempting to move hover right
-	positions to check: JS, 7S, QH
-	Hovered is now JS in col 6
-	Attempting to move hover right
-	positions to check: 7S, QH
-	Hovered is now 7S in col 7
-	Attempting to move hover right
-	positions to check: QH
-	Hovered is now QH in col 8
-	Attempting to move hover right
-	Attempting to move hover right
-	Attempting to move hover left
-	positions to check: 7S, JS, 4H, 10C, QC, 4C, 9C
-	Hovered is now 7S in col 7
-	Attempting to move hover left
-	positions to check: JS, 4H, 10C, QC, 4C, 9C
-	Hovered is now JS in col 6
-	Attempting to move hover left
-	positions to check: 4H, 10C, QC, 4C, 9C
-	Hovered is now 4H in col 5
-	Attempting to move hover left
-	positions to check: 10C, QC, 4C, 9C
-	Hovered is now 10C in col 4
-	Attempting to move hover left
-	positions to check: QC, 4C, 9C
-	Hovered is now QC in col 3
-	Attempting to move hover left
-	positions to check: 4C, 9C
-	Hovered is now 4C in col 2
-	Attempting to move hover left
-	positions to check: 9C
-	Hovered is now 9C in col 1
-	Attempting to move hover left
-	Attempting to move hover left
-	Attempting to move hover left
-	Attempting to move hover left
-	Attempting to move hover up
-	Attempting to move hover up
-	Attempting to move hover up
-	Attempting to move hover up
-	Attempting to move hover up
-	Attempting to move hover up
-	Attempting to move hover up
-	Attempting to move hover up
-	Attempting to move hover up
-	Attempting to move hover up
-	Attempting to move hover up
-	Attempting to move hover up
-	Attempting to move hover up
-	Attempting to move hover up
-	Attempting to move hover up
-	Attempting to move hover down
-	Attempting to move hover down
-	Attempting to move hover down
-	Attempting to move hover down
-	Attempting to move hover down
-	Attempting to move hover down
-	Attempting to move hover down
-	Attempting to move hover down
-	Attempting to move hover down
-	Attempting to move hover down
-	Attempting to move hover down
-	Attempting to move hover down
-	Attempting to move hover down
-	Attempting to move hover down
-	Attempting to move hover down
-	Attempting to move hover down
-	Attempting to move hover right
-	positions to check: 4C, QC, 10C, 4H, JS, 7S, QH
-	Hovered is now 4C in col 2
-	Attempting to move hover right
-	positions to check: QC, 10C, 4H, JS, 7S, QH
-	Hovered is now QC in col 3
-	Attempting to move hover right
-	positions to check: 10C, 4H, JS, 7S, QH
-	Hovered is now 10C in col 4
-	Attempting to move hover right
-	positions to check: 4H, JS, 7S, QH
-	Hovered is now 4H in col 5
-	Attempting to move hover right
-	positions to check: JS, 7S, QH
-	Hovered is now JS in col 6
-	Attempting to move hover left
-	positions to check: 4H, 10C, QC, 4C, 9C
-	Hovered is now 4H in col 5
-	Attempting to move hover left
-	positions to check: 10C, QC, 4C, 9C
-	Hovered is now 10C in col 4
 
 fn [select_hovered]
-	Selected hovered card 10C in col 4
+	Selected hovered card JS in col 6
 	Hovered is now cell #0 in col 0
 
 fn [card.move]
-	10C moved to col 0 @ (7, 6)
+	JS moved to col 0 @ (7, 6)
 
 fn [set_tableau]
-	6C's tableau: 5D
+	7D's tableau: 6C
+	QD's tableau: JC
 
 fn [reset_tableaux]
 	Complete
 
 fn [move_hover_with_no_selection]
 	Attempting to move hover right
-	positions to check: 9C, 4C, QC, AH, 4H, JS, 7S, QH
-	Hovered is now 9C in col 1
+	positions to check: 2D, 2H, 6H, 9C, 5H, AH, KC, 7S
+	Hovered is now 2D in col 1
 	Attempting to move hover right
-	positions to check: 4C, QC, AH, 4H, JS, 7S, QH
-	Hovered is now 4C in col 2
+	positions to check: 2H, 6H, 9C, 5H, AH, KC, 7S
+	Hovered is now 2H in col 2
 	Attempting to move hover right
-	positions to check: QC, AH, 4H, JS, 7S, QH
-	Hovered is now QC in col 3
+	positions to check: 6H, 9C, 5H, AH, KC, 7S
+	Hovered is now 6H in col 3
 	Attempting to move hover right
-	positions to check: AH, 4H, JS, 7S, QH
-	Hovered is now AH in col 4
+	positions to check: 9C, 5H, AH, KC, 7S
+	Hovered is now 9C in col 4
+	Attempting to move hover right
+	positions to check: 5H, AH, KC, 7S
+	Hovered is now 5H in col 5
+	Attempting to move hover right
+	positions to check: AH, KC, 7S
+	Hovered is now AH in col 6
 
 fn [select_hovered]
-	Selected hovered card AH in col 4
+	Selected hovered card AH in col 6
 	Hovered is now hearts foundation in col 9
 
 fn [card.move]
 	AH moved to col 9 @ (215, 126)
 
 fn [set_tableau]
-	6C's tableau: 5D
+	7D's tableau: 6C
+	QD's tableau: JC
 
 fn [reset_tableaux]
 	Complete
 
 fn [move_hover_with_no_selection]
 	Attempting to move hover left
-	positions to check: QH, 7S, JS, 4H, 9D, QC, 4C, 9C, 10C, 10C
-	Hovered is now QH in col 8
+	positions to check: 7S, KC, 6D, 5H, 9C, 6H, 2H, 2D, JS, JS
+	Hovered is now 7S in col 8
 	Attempting to move hover left
-	positions to check: 7S, JS, 4H, 9D, QC, 4C, 9C, 10C, 10C
-	Hovered is now 7S in col 7
+	positions to check: KC, 6D, 5H, 9C, 6H, 2H, 2D, JS, JS
+	Hovered is now KC in col 7
 	Attempting to move hover left
-	positions to check: JS, 4H, 9D, QC, 4C, 9C, 10C, 10C
-	Hovered is now JS in col 6
+	positions to check: 6D, 5H, 9C, 6H, 2H, 2D, JS, JS
+	Hovered is now 6D in col 6
 	Attempting to move hover left
-	positions to check: 4H, 9D, QC, 4C, 9C, 10C, 10C
-	Hovered is now 4H in col 5
+	positions to check: 5H, 9C, 6H, 2H, 2D, JS, JS
+	Hovered is now 5H in col 5
 	Attempting to move hover left
-	positions to check: 9D, QC, 4C, 9C, 10C, 10C
-	Hovered is now 9D in col 4
+	positions to check: 9C, 6H, 2H, 2D, JS, JS
+	Hovered is now 9C in col 4
 	Attempting to move hover left
-	positions to check: QC, 4C, 9C, 10C, 10C
-	Hovered is now QC in col 3
+	positions to check: 6H, 2H, 2D, JS, JS
+	Hovered is now 6H in col 3
 	Attempting to move hover left
-	positions to check: 4C, 9C, 10C, 10C
-	Hovered is now 4C in col 2
+	positions to check: 2H, 2D, JS, JS
+	Hovered is now 2H in col 2
 	Attempting to move hover left
-	positions to check: 9C, 10C, 10C
-	Hovered is now 9C in col 1
+	positions to check: 2D, JS, JS
+	Hovered is now 2D in col 1
 	Attempting to move hover left
-	positions to check: 10C, 10C
+	positions to check: JS, JS
+	Attempting to move hover left
+	positions to check: JS, JS
+	Attempting to move hover left
+	positions to check: JS, JS
+	Attempting to move hover left
+	positions to check: JS, JS
+	Attempting to move hover left
+	positions to check: JS, JS
+	Attempting to move hover left
+	positions to check: JS, JS
+	Attempting to move hover left
+	positions to check: JS, JS
+	Attempting to move hover right
+	positions to check: 2H, 6H, 9C, 5H, 6D, KC, 7S, AH, AH
+	Hovered is now 2H in col 2
+	Attempting to move hover right
+	positions to check: 6H, 9C, 5H, 6D, KC, 7S, AH, AH
+	Hovered is now 6H in col 3
+	Attempting to move hover right
+	positions to check: 9C, 5H, 6D, KC, 7S, AH, AH
+	Hovered is now 9C in col 4
+	Attempting to move hover left
+	positions to check: 6H, 2H, 2D, JS, JS
+	Hovered is now 6H in col 3
+	Attempting to move hover left
+	positions to check: 2H, 2D, JS, JS
+	Hovered is now 2H in col 2
+	Attempting to move hover left
+	positions to check: 2D, JS, JS
+	Hovered is now 2D in col 1
+	Attempting to move hover left
+	positions to check: JS, JS
+	Attempting to move hover left
+	positions to check: JS, JS
+	Attempting to move hover left
+	positions to check: JS, JS
+	Attempting to move hover left
+	positions to check: JS, JS
+	Attempting to move hover left
+	positions to check: JS, JS
+	Attempting to move hover left
+	positions to check: JS, JS
+	Attempting to move hover right
+	positions to check: 2H, 6H, 9C, 5H, 6D, KC, 7S, AH, AH
+	Hovered is now 2H in col 2
+	Attempting to move hover right
+	positions to check: 6H, 9C, 5H, 6D, KC, 7S, AH, AH
+	Hovered is now 6H in col 3
+	Attempting to move hover right
+	positions to check: 9C, 5H, 6D, KC, 7S, AH, AH
+	Hovered is now 9C in col 4
+	Attempting to move hover right
+	positions to check: 5H, 6D, KC, 7S, AH, AH
+	Hovered is now 5H in col 5
+	Attempting to move hover right
+	positions to check: 6D, KC, 7S, AH, AH
+	Hovered is now 6D in col 6
+	Attempting to move hover right
+	positions to check: KC, 7S, AH, AH
+	Hovered is now KC in col 7
+
+fn [select_hovered]
+	Selected hovered card KC in col 7
+	Hovered is now cell #1 in col 0
+
+fn [card.move]
+	KC moved to col 0 @ (7, 46)
+
+fn [set_tableau]
+	7D's tableau: 6C
+	QD's tableau: JC
+
+fn [reset_tableaux]
+	Complete
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+	positions to check: 2D, 2H, 6H, 9C, 5H, 6D, AD, 7S, AH, AH
+	Hovered is now 2D in col 1
+	Attempting to move hover right
+	positions to check: 2H, 6H, 9C, 5H, 6D, AD, 7S, AH, AH
+	Hovered is now 2H in col 2
+	Attempting to move hover right
+	positions to check: 6H, 9C, 5H, 6D, AD, 7S, AH, AH
+	Hovered is now 6H in col 3
+	Attempting to move hover right
+	positions to check: 9C, 5H, 6D, AD, 7S, AH, AH
+	Hovered is now 9C in col 4
+	Attempting to move hover right
+	positions to check: 5H, 6D, AD, 7S, AH, AH
+	Hovered is now 5H in col 5
+	Attempting to move hover right
+	positions to check: 6D, AD, 7S, AH, AH
+	Hovered is now 6D in col 6
+	Attempting to move hover right
+	positions to check: AD, 7S, AH, AH
+	Hovered is now AD in col 7
+
+fn [select_hovered]
+	Selected hovered card AD in col 7
+	Hovered is now diamonds foundation in col 9
+
+fn [card.move]
+	AD moved to col 9 @ (215, 86)
+
+fn [set_tableau]
+	7D's tableau: 6C
+	QD's tableau: JC
+
+fn [reset_tableaux]
+	Complete
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+	positions to check: 7S, QH, 6D, 5H, 9C, 6H, 2H, 2D, KC, KC, JS
+	Hovered is now 7S in col 8
+	Attempting to move hover left
+	positions to check: QH, 6D, 5H, 9C, 6H, 2H, 2D, KC, KC, JS
+	Hovered is now QH in col 7
+	Attempting to move hover left
+	positions to check: 6D, 5H, 9C, 6H, 2H, 2D, KC, KC, JS
+	Hovered is now 6D in col 6
+	Attempting to move hover left
+	positions to check: 5H, 9C, 6H, 2H, 2D, KC, KC, JS
+	Hovered is now 5H in col 5
+	Attempting to move hover left
+	positions to check: 9C, 6H, 2H, 2D, KC, KC, JS
+	Hovered is now 9C in col 4
+	Attempting to move hover left
+	positions to check: 6H, 2H, 2D, KC, KC, JS
+	Hovered is now 6H in col 3
+	Attempting to move hover left
+	positions to check: 2H, 2D, KC, KC, JS
+	Hovered is now 2H in col 2
+	Attempting to move hover left
+	positions to check: 2D, KC, KC, JS
+	Hovered is now 2D in col 1
+	Attempting to move hover left
+	positions to check: KC, KC, JS
+	Hovered is now JS in col 0
+	Attempting to move hover left
+	Attempting to move hover left
+	Attempting to move hover left
+	Attempting to move hover left
+	Attempting to move hover left
+	Attempting to move hover down
+	positions to check: KC
+	Attempting to move hover right
+	positions to check: 2D, 2H, 6H, 9C, 5H, 6D, QH, 7S, AH, AD, AH
+	Hovered is now 2D in col 1
+	Attempting to move hover left
+	positions to check: KC, KC, JS
+	Hovered is now JS in col 0
+
+fn [select_hovered]
+	Selected hovered card JS in col 0
+	Hovered is now QH in col 7
+
+fn [card.move]
+	JS moved to col 7 @ (164, 62)
+
+fn [set_tableau]
+	7D's tableau: 6C
+	QD's tableau: JC
+	QH's tableau: JS
+
+fn [reset_tableaux]
+	Complete
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+	positions to check: 6D, 5H, 9C, 6H, 2H, 2D, KC, KC
+	Hovered is now 6D in col 6
+	Attempting to move hover left
+	positions to check: 5H, 9C, 6H, 2H, 2D, KC, KC
+	Hovered is now 5H in col 5
+	Attempting to move hover left
+	positions to check: 9C, 6H, 2H, 2D, KC, KC
+	Hovered is now 9C in col 4
+	Attempting to move hover left
+	positions to check: 6H, 2H, 2D, KC, KC
+	Hovered is now 6H in col 3
+	Attempting to move hover left
+	positions to check: 2H, 2D, KC, KC
+	Hovered is now 2H in col 2
+	Attempting to move hover left
+	positions to check: 2D, KC, KC
+	Hovered is now 2D in col 1
+	Attempting to move hover left
+	positions to check: KC, KC
+	Attempting to move hover left
+	positions to check: KC, KC
+	Attempting to move hover left
+	positions to check: KC, KC
+	Attempting to move hover left
+	positions to check: KC, KC
+	Attempting to move hover left
+	positions to check: KC, KC
+	Attempting to move hover left
+	positions to check: KC, KC
+	Attempting to move hover left
+	positions to check: KC, KC
+	Attempting to move hover left
+	positions to check: KC, KC
+	Attempting to move hover right
+	positions to check: 2H, 6H, 9C, 5H, 6D, QH, JS, 7S, AH, AD, AH
+	Hovered is now 2H in col 2
+	Attempting to move hover right
+	positions to check: 6H, 9C, 5H, 6D, QH, JS, 7S, AH, AD, AH
+	Hovered is now 6H in col 3
+	Attempting to move hover right
+	positions to check: 9C, 5H, 6D, QH, JS, 7S, AH, AD, AH
+	Hovered is now 9C in col 4
+	Attempting to move hover right
+	positions to check: 5H, 6D, QH, JS, 7S, AH, AD, AH
+	Hovered is now 5H in col 5
+	Attempting to move hover right
+	positions to check: 6D, QH, JS, 7S, AH, AD, AH
+	Hovered is now 6D in col 6
+	Attempting to move hover right
+	positions to check: QH, JS, 7S, AH, AD, AH
+	Hovered is now JS in col 7
+	Attempting to move hover right
+	positions to check: 7S, AH, AD, AH
+	Hovered is now 7S in col 8
+	Attempting to move hover right
+	positions to check: AH, AD, AH
+	Hovered is now AH in col 9
+	Attempting to move hover right
+	Attempting to move hover right
+	Attempting to move hover right
+	Attempting to move hover right
+	Attempting to move hover right
+	Attempting to move hover right
+	Attempting to move hover right
+	Attempting to move hover left
+	positions to check: 7S, QH, JS, 6D, 5H, 9C, 6H, 2H, 2D, KC, KC
+	Hovered is now 7S in col 8
+	Attempting to move hover left
+	positions to check: QH, JS, 6D, 5H, 9C, 6H, 2H, 2D, KC, KC
+	Hovered is now JS in col 7
+	Attempting to move hover left
+	positions to check: 6D, 5H, 9C, 6H, 2H, 2D, KC, KC
+	Hovered is now 6D in col 6
+	Attempting to move hover left
+	positions to check: 5H, 9C, 6H, 2H, 2D, KC, KC
+	Hovered is now 5H in col 5
+	Attempting to move hover left
+	positions to check: 9C, 6H, 2H, 2D, KC, KC
+	Hovered is now 9C in col 4
+	Attempting to move hover left
+	positions to check: 6H, 2H, 2D, KC, KC
+	Hovered is now 6H in col 3
+	Attempting to move hover left
+	positions to check: 2H, 2D, KC, KC
+	Hovered is now 2H in col 2
+	Attempting to move hover left
+	positions to check: 2D, KC, KC
+	Hovered is now 2D in col 1
+	Attempting to move hover left
+	positions to check: KC, KC
+	Attempting to move hover left
+	positions to check: KC, KC
+	Attempting to move hover left
+	positions to check: KC, KC
+	Attempting to move hover left
+	positions to check: KC, KC
+	Attempting to move hover left
+	positions to check: KC, KC
+	Attempting to move hover left
+	positions to check: KC, KC
+	Attempting to move hover left
+	positions to check: KC, KC
+
+fn [select_hovered]
+	Selected hovered card 2D in col 1
+	Hovered is now AD in col 9
+
+fn [card.move]
+	2D moved to col 9 @ (215, 86)
+
+fn [set_tableau]
+	7D's tableau: 6C
+	QD's tableau: JC
+	QH's tableau: JS
+
+fn [reset_tableaux]
+	Complete
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+	positions to check: 7S, QH, JS, 6D, 5H, 9C, 6H, 2H, KH, KC, KC
+	Hovered is now 7S in col 8
+	Attempting to move hover left
+	positions to check: QH, JS, 6D, 5H, 9C, 6H, 2H, KH, KC, KC
+	Hovered is now JS in col 7
+	Attempting to move hover left
+	positions to check: 6D, 5H, 9C, 6H, 2H, KH, KC, KC
+	Hovered is now 6D in col 6
+	Attempting to move hover left
+	positions to check: 5H, 9C, 6H, 2H, KH, KC, KC
+	Hovered is now 5H in col 5
+	Attempting to move hover left
+	positions to check: 9C, 6H, 2H, KH, KC, KC
+	Hovered is now 9C in col 4
+	Attempting to move hover left
+	positions to check: 6H, 2H, KH, KC, KC
+	Hovered is now 6H in col 3
+	Attempting to move hover left
+	positions to check: 2H, KH, KC, KC
+	Hovered is now 2H in col 2
+
+fn [select_hovered]
+	Selected hovered card 2H in col 2
+	Hovered is now AH in col 9
+
+fn [card.move]
+	2H moved to col 9 @ (215, 126)
+
+fn [set_tableau]
+	7D's tableau: 6C
+	QD's tableau: JC
+	QH's tableau: JS
+
+fn [reset_tableaux]
+	Complete
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+	positions to check: 7S, QH, JS, 6D, 5H, 9C, 6H, 5S, KH, KC, KC
+	Hovered is now 7S in col 8
+	Attempting to move hover left
+	positions to check: QH, JS, 6D, 5H, 9C, 6H, 5S, KH, KC, KC
+	Hovered is now JS in col 7
+	Attempting to move hover left
+	positions to check: 6D, 5H, 9C, 6H, 5S, KH, KC, KC
+	Hovered is now 6D in col 6
+	Attempting to move hover left
+	positions to check: 5H, 9C, 6H, 5S, KH, KC, KC
+	Hovered is now 5H in col 5
+	Attempting to move hover left
+	positions to check: 9C, 6H, 5S, KH, KC, KC
+	Hovered is now 9C in col 4
+	Attempting to move hover left
+	positions to check: 6H, 5S, KH, KC, KC
+	Hovered is now 6H in col 3
+	Attempting to move hover left
+	positions to check: 5S, KH, KC, KC
+	Hovered is now 5S in col 2
+
+fn [select_hovered]
+	Selected hovered card 5S in col 2
+	Hovered is now 6H in col 3
+
+fn [card.move]
+	5S moved to col 3 @ (76, 104)
+
+fn [set_tableau]
+	7D's tableau: 6C
+	QD's tableau: JC
+	QH's tableau: JS
+	6H's tableau: 5S
+
+fn [reset_tableaux]
+	Complete
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover up
+	positions to check: 6H
+	Hovered is now 6H in col 3
+
+fn [select_hovered]
+	Selected hovered card 6H in col 3
+	Hovered is now 7S in col 8
+
+fn [card.move]
+	6H moved to col 8 @ (186, 90)
+
+fn [card.move_tableau]
+	(Part of tableau) 5S moved to col 8 @ (186, 104)
+
+fn [set_tableau]
+	7D's tableau: 6C
+	QD's tableau: JC
+	QH's tableau: JS
+	7S's tableau: 6H, 5S
+	6H's tableau: 5S
+
+fn [reset_tableaux]
+	Complete
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover left
+	positions to check: QH, JS, 6D, 5H, 9C, 8D, 4S, KH, KC, KC
+	Hovered is now JS in col 7
+	Attempting to move hover left
+	positions to check: 6D, 5H, 9C, 8D, 4S, KH, KC, KC
+	Hovered is now 6D in col 6
+	Attempting to move hover left
+	positions to check: 5H, 9C, 8D, 4S, KH, KC, KC
+	Hovered is now 5H in col 5
+	Attempting to move hover left
+	positions to check: 9C, 8D, 4S, KH, KC, KC
+	Hovered is now 9C in col 4
+	Attempting to move hover left
+	positions to check: 8D, 4S, KH, KC, KC
+	Hovered is now 8D in col 3
+	Attempting to move hover left
+	positions to check: 4S, KH, KC, KC
+	Hovered is now 4S in col 2
+	Attempting to move hover left
+	positions to check: KH, KC, KC
+	Hovered is now KH in col 1
+
+fn [select_hovered]
+	Selected hovered card KH in col 1
+	Hovered is now cell #0 in col 0
+
+fn [card.move]
+	KH moved to col 0 @ (7, 6)
+
+fn [set_tableau]
+	7D's tableau: 6C
+	QD's tableau: JC
+	QH's tableau: JS
+	7S's tableau: 6H, 5S
+	6H's tableau: 5S
+
+fn [reset_tableaux]
+	Complete
+
+fn [move_hover_with_no_selection]
+	Attempting to move hover right
+	positions to check: 8H, 4S, 8D, 9C, 5H, 6D, QH, JS, 7S, 6H, 5S, AH, 2H, 2D, 2H
+	Hovered is now 8H in col 1
+	Attempting to move hover right
+	positions to check: 4S, 8D, 9C, 5H, 6D, QH, JS, 7S, 6H, 5S, AH, 2H, 2D, 2H
+	Hovered is now 4S in col 2
+	Attempting to move hover right
+	positions to check: 8D, 9C, 5H, 6D, QH, JS, 7S, 6H, 5S, AH, 2H, 2D, 2H
+	Hovered is now 8D in col 3
+	Attempting to move hover right
+	positions to check: 9C, 5H, 6D, QH, JS, 7S, 6H, 5S, AH, 2H, 2D, 2H
+	Hovered is now 9C in col 4
+	Attempting to move hover right
+	positions to check: 5H, 6D, QH, JS, 7S, 6H, 5S, AH, 2H, 2D, 2H
+	Hovered is now 5H in col 5
+	Attempting to move hover right
+	positions to check: 6D, QH, JS, 7S, 6H, 5S, AH, 2H, 2D, 2H
+	Hovered is now 6D in col 6
+	Attempting to move hover right
+	positions to check: QH, JS, 7S, 6H, 5S, AH, 2H, 2D, 2H
+	Hovered is now JS in col 7
+	Attempting to move hover right
+	positions to check: 7S, 6H, 5S, AH, 2H, 2D, 2H
+	Hovered is now 7S in col 8
+	Attempting to move hover right
+	positions to check: AH, 2H, 2D, 2H
+	Hovered is now AH in col 9
+	Attempting to move hover left
+	positions to check: 7S, 6H, 5S, QH, JS, 6D, 5H, 9C, 8D, 4S, 8H, KC, KH, KC
+	Hovered is now 7S in col 8
+	Attempting to move hover right
+	positions to check: AH, 2H, 2D, 2H
+	Hovered is now AH in col 9
+	Attempting to move hover left
+	positions to check: 7S, 6H, 5S, QH, JS, 6D, 5H, 9C, 8D, 4S, 8H, KC, KH, KC
+	Hovered is now 7S in col 8
+	Attempting to move hover right
+	positions to check: AH, 2H, 2D, 2H
+	Hovered is now AH in col 9
+	Attempting to move hover left
+	positions to check: 7S, 6H, 5S, QH, JS, 6D, 5H, 9C, 8D, 4S, 8H, KC, KH, KC
+	Hovered is now 7S in col 8
+	Attempting to move hover right
+	positions to check: AH, 2H, 2D, 2H
+	Hovered is now AH in col 9

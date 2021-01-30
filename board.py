@@ -50,8 +50,9 @@ class Board(object):
                     return card
                 # Can move to foundation
                 foundation_card = self.get_top_card_on_foundation(suit=card.suit)
-                if card.suit == foundation_card.suit and card.value == foundation_card.value + 1:
-                    return card
+                if foundation_card:
+                    if card.suit == foundation_card.suit and card.value == foundation_card.value + 1:
+                        return card
                 # Can move to bottom of cascade
                 for bottom_card in [self.get_last_card_in_cascade(n) for n in range(1, 9)]:
                     if bottom_card.color != card.color and bottom_card.value == card.value + 1:
@@ -74,8 +75,9 @@ class Board(object):
                     return card
                 # Can move to foundation
                 foundation_card = self.get_top_card_on_foundation(suit=card.suit)
-                if card.suit == foundation_card.suit and card.value == foundation_card.value + 1:
-                    return card
+                if foundation_card:
+                    if card.suit == foundation_card.suit and card.value == foundation_card.value + 1:
+                        return card
                 # Can move to bottom of another cascade
                 for bottom_card in [self.get_last_card_in_cascade(n) for n in range(1, 9)]:
                     if bottom_card.color != card.color and bottom_card.value == card.value + 1:
