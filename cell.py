@@ -4,6 +4,7 @@ class Cell(object):
     def __init__(self, cell_type, pos, col, suit=None):
         self.cell_type = cell_type
         self.col = col
+        self.dims = (19, 28)
         self.suit = suit
         self.vacant = True
 

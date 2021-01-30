@@ -125,14 +125,14 @@ def main():
         # Draw cards
         for card in board.cards:
             if not DEALING:
-                card.hovered = bool(card == board.hovered)
+                board.update_highlights()
             card.update()
             screen.blit(card.surf, card.pos)
 
-        # Draw select markers, if applicable
+        # Draw hover markers, if applicable
         if board.selected_card:
-            for n in range(len(board.select_markers)):
-                screen.blit(board.select_markers[n], (board.select_marker_positions[n]))
+            for n in range(len(board.hover_markers)):
+                screen.blit(board.hover_markers[n], (board.hover_marker_positions[n]))
 
         # Draw card back 'deck' while dealing
         if DEALING:
@@ -156,7 +156,6 @@ TODO
 ----
 
 - Bug: Stop looking for movable cards if cards below are not a tableau
-- Swap 'hovered' and 'selected' graphics (markers should go around hover) while something is selected
 - Wrap L/R hover moves around screen
 - After moving a card to a foundation, set hover back to the last card in the column the card came from (if it has a move; if not, the next closest one)
 - Hold DPAD buttons to repeat 'press' event after delay

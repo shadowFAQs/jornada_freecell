@@ -11,7 +11,7 @@ class Card(object):
         self.col = 0
         self.dims = (19, 28)
         self.face_up = False
-        self.hovered = False
+        self.highlight = False
         self.on_cell = False
         self.on_foundation = False
         self.pos = pos
@@ -29,11 +29,11 @@ class Card(object):
         # Graphics
         self.surf_suit.set_colorkey(self.c_transparent)
         self.surf_value.set_colorkey(self.c_transparent)
-        self.bmp_front = pygame.image.load('card_front.bmp')
-        self.bmp_hover = pygame.image.load('card_hover.bmp')
+        self.bmp_face_normal = pygame.image.load('card_face.bmp')
+        self.bmp_face_highlight = pygame.image.load('card_face_highlight.bmp')
         self.bmp_suits = pygame.image.load('suits.bmp')
         self.bmp_values = pygame.image.load('values.bmp')
-        self.draw_face(self.bmp_front)
+        self.draw_face(self.bmp_face_normal)
 
     def draw_face(self, front):
         suit_index = self.all_suits.index(self.suit)
@@ -99,7 +99,7 @@ class Card(object):
                 self.animating = False
 
         # Draw hovered / unhovered face
-        if self.hovered:
-            self.draw_face(self.bmp_hover)
+        if self.highlight:
+            self.draw_face(self.bmp_face_highlight)
         else:
-            self.draw_face(self.bmp_front)
+            self.draw_face(self.bmp_face_normal)

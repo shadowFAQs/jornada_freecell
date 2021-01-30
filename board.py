@@ -9,14 +9,14 @@ class Board(object):
         self.cards = cards
         self.cells = cells
         self.foundations = foundations
+        self.hover_marker_positions = []
         self.hovered = None
-        self.select_marker_positions = []
         self.selected_card = None
         self.valid_moves = []
 
         # Select marker images
-        self.select_markers = [pygame.image.load('select_marker_top.bmp'), pygame.image.load('select_marker_right.bmp'), pygame.image.load('select_marker_bottom.bmp'), pygame.image.load('select_marker_left.bmp')]
-        for marker in self.select_markers:
+        self.hover_markers = [pygame.image.load('hover_marker_top.bmp'), pygame.image.load('hover_marker_right.bmp'), pygame.image.load('hover_marker_bottom.bmp'), pygame.image.load('hover_marker_left.bmp')]
+        for marker in self.hover_markers:
             marker.set_colorkey(transparent)
 
     def count_empty_bases(self):
@@ -309,6 +309,7 @@ class Board(object):
             hover = self.find_first_valid_position_for_selected_card(positions_to_check)
             if hover:
                 self.hovered = hover
+                self.set_hover_marker_positions()
                 log('move_hover_with_selection', f'Hovered set to {self.hovered.label}')
 
     def place_selected_card(self):
@@ -368,7 +369,7 @@ class Board(object):
         self.selected_card = self.hovered
         log('select_hovered', f'Selected hovered card {self.selected_card.label} in col {self.selected_card.col}')
         self.set_hover_from_selected()
-        self.set_select_marker_positions()
+        self.set_hover_marker_positions()
 
     def set_cards_z_index(self):
         """
@@ -416,28 +417,28 @@ class Board(object):
         # Hover over first free cell
         self.hovered = self.get_free_cells()[0]
 
-    def set_select_marker_positions(self):
+    def set_hover_marker_positions(self):
         # Top (11 x 8 px)
-        x_pos = self.selected_card.pos[0] + int(self.selected_card.dims[0] / 2) - 5
-        y_pos = self.selected_card.pos[1] - 4
+        x_pos = self.hovered.pos[0] + int(self.hovered.dims[0] / 2) - 5
+        y_pos = self.hovered.pos[1] - 4
         positions = [(x_pos, y_pos)]
 
         # Right (8 x 11 px)
-        x_pos = self.selected_card.pos[0] + self.selected_card.dims[0] - 4
-        y_pos = self.selected_card.pos[1] + int(self.selected_card.dims[1] / 2) - 6
+        x_pos = self.hovered.pos[0] + self.hovered.dims[0] - 4
+        y_pos = self.hovered.pos[1] + int(self.hovered.dims[1] / 2) - 6
         positions.append((x_pos, y_pos))
 
         # Bottom (11 x 8 px)
-        x_pos = self.selected_card.pos[0] + int(self.selected_card.dims[0] / 2) - 5
-        y_pos = self.selected_card.pos[1] + self.selected_card.dims[1] - 4
+        x_pos = self.hovered.pos[0] + int(self.hovered.dims[0] / 2) - 5
+        y_pos = self.hovered.pos[1] + self.hovered.dims[1] - 4
         positions.append((x_pos, y_pos))
 
         # Left (8 x 11 px)
-        x_pos = self.selected_card.pos[0] + - 4
-        y_pos = self.selected_card.pos[1] + int(self.selected_card.dims[1] / 2) - 6
+        x_pos = self.hovered.pos[0] + - 4
+        y_pos = self.hovered.pos[1] + int(self.hovered.dims[1] / 2) - 6
         positions.append((x_pos, y_pos))
 
-        self.select_marker_positions = positions
+        self.hover_marker_positions = positions
 
     def set_tableau(self, card):
         # Cards on cells or foundations have no tableaux
@@ -460,3 +461,12 @@ class Board(object):
 
     def shuffle(self):
         random.shuffle(self.cards)
+
+    def update_highlights(self):
+        for card in self.cards:
+            card.highlight = False
+
+        if self.selected_card:
+            self.selected_card.highlight = True
+        else:
+            self.hovered.highlight = True
