@@ -73,10 +73,14 @@ class Board(object):
                 # Can move to free cell or empty base
                 if self.count_free_cells() or self.count_empty_bases():
                     return card
-                # Can move to foundation
+                # Can move to card on foundation
                 foundation_card = self.get_top_card_on_foundation(suit=card.suit)
                 if foundation_card:
                     if card.suit == foundation_card.suit and card.value == foundation_card.value + 1:
+                        return card
+                else:
+                    # Ace can move to foundation
+                    if card.value == 1:
                         return card
                 # Can move to bottom of another cascade
                 for bottom_card in [self.get_last_card_in_cascade(n) for n in range(1, 9)]:
@@ -246,16 +250,25 @@ class Board(object):
 
         This fn is called when there is no card selected already.
         """
+        positions_to_check = []
+
         if direction == 'up':
             log('move_hover_with_no_selection', 'Attempting to move hover up')
-            # Check cards above in current column
-            positions_to_check = [c for c in self.cards if c.col == self.hovered.col and c.pos[1] < self.hovered.pos[1] and len(c.tableau) == len(self.get_cards_below_card(c))]
+            # Check cards above in current cascade
+            positions_to_check += [c for c in self.cards if c.col == self.hovered.col and c.pos[1] < self.hovered.pos[1] and len(c.tableau) == len(self.get_cards_below_card(c))]
+            # Check cards in other foundations above
+            if self.hovered.on_foundation:
+                for suit in self.all_suits:
+                    top_card = self.get_top_card_on_foundation(suit)
+                    if top_card:
+                        if top_card.pos[1] < self.hovered.pos[1]:
+                            positions_to_check.append(top_card)
             positions_to_check = sorted(positions_to_check, key=lambda c: c.pos[1], reverse=True)
 
         elif direction == 'right':
             log('move_hover_with_no_selection', 'Attempting to move hover right')
             # Check cards in cascades to the right
-            positions_to_check = [c for c in self.cards if self.hovered.col < c.col < 9 and len(c.tableau) == len(self.get_cards_below_card(c))]
+            positions_to_check += [c for c in self.cards if self.hovered.col < c.col < 9 and len(c.tableau) == len(self.get_cards_below_card(c))]
             # Check cards on foundations
             if self.hovered.col < 9:
                 for suit in self.all_suits:
@@ -267,13 +280,20 @@ class Board(object):
         elif direction == 'down':
             log('move_hover_with_no_selection', 'Attempting to move hover down')
             # Check cards below in current column
-            positions_to_check = [c for c in self.cards if c.col == self.hovered.col and c.pos[1] > self.hovered.pos[1]]
+            positions_to_check += [c for c in self.cards if c.col == self.hovered.col and c.pos[1] > self.hovered.pos[1] and len(c.tableau) == len(self.get_cards_below_card(c))]
+            # Check cards in other foundations below
+            if self.hovered.on_foundation:
+                for suit in self.all_suits:
+                    top_card = self.get_top_card_on_foundation(suit)
+                    if top_card:
+                        if top_card.pos[1] > self.hovered.pos[1]:
+                            positions_to_check.append(top_card)
             positions_to_check = sorted(positions_to_check, key=lambda c: c.pos[1])
 
         elif direction == 'left':
             log('move_hover_with_no_selection', 'Attempting to move hover left')
             # Check cards in cascades to the left
-            positions_to_check = [c for c in self.cards if c.col < self.hovered.col and len(c.tableau) == len(self.get_cards_below_card(c))]
+            positions_to_check += [c for c in self.cards if c.col < self.hovered.col and len(c.tableau) == len(self.get_cards_below_card(c))]
             # Check cards on cells
             if self.hovered.col > 0:
                 positions_to_check += self.get_cards_on_cells()
