@@ -245,81 +245,47 @@ class Board(object):
 
         This fn is called when there is no card selected already.
         """
-        positions_to_check = []
+        card = None
 
         if direction == 'up':
-            log('move_hover_with_no_selection', 'Attempting to move hover up')
-            # Check cards above in current cascade (or on cells)
-            positions_to_check = []
-            for card in self.cards:
-                if card.col == self.hovered.col and card.pos[1] < self.hovered.pos[1]:
-                    # If card is in a cascade, do a tableau check; if
-                    # it's on a cell, don't
-                    if card.on_cell:
-                        positions_to_check.append(card)
-                    else:
-                        if len(card.tableau) == len(self.get_cards_below_card(card)):
-                            positions_to_check.append(card)
-            # If hovering on a foundation card, check cards in other
-            # foundations above
-            if self.hovered.on_foundation:
-                for suit in self.all_suits:
-                    top_card = self.get_top_card_on_foundation(suit)
-                    if top_card:
-                        if top_card.pos[1] < self.hovered.pos[1]:
-                            positions_to_check.append(top_card)
-            positions_to_check = sorted(positions_to_check, key=lambda c: c.pos[1], reverse=True)
-
-        elif direction == 'right':
-            log('move_hover_with_no_selection', 'Attempting to move hover right')
-            # Check cards in cascades to the right
-            positions_to_check += [c for c in self.cards if self.hovered.col < c.col < 9 and len(c.tableau) == len(self.get_cards_below_card(c))]
-            # Check cards on foundations
-            if self.hovered.col < 9:
-                for suit in self.all_suits:
-                    foundation_card = self.get_top_card_on_foundation(suit)
-                    if foundation_card:
-                        positions_to_check.append(foundation_card)
-            positions_to_check = sorted(positions_to_check, key=lambda c: c.pos[0])
+            cards = [c for c in self.cards if c.col == self.hovered.col and c.pos[1] < self.hovered.pos[1]]
+            cards = sorted(cards, key=lambda c: c.pos[1], reverse=True)
+            if cards:
+                card = cards[0]
 
         elif direction == 'down':
-            log('move_hover_with_no_selection', 'Attempting to move hover down')
-            # Check cards below in current cascade (or on cells)
-            positions_to_check = []
-            for card in self.cards:
-                if card.col == self.hovered.col and card.pos[1] > self.hovered.pos[1]:
-                    # If card is in a cascade, do a tableau check; if
-                    # it's on a cell, don't
-                    if card.on_cell:
-                        positions_to_check.append(card)
-                    else:
-                        if len(card.tableau) == len(self.get_cards_below_card(card)):
-                            positions_to_check.append(card)
-            # If hovering on a foundation card, check cards in other
-            # foundations below
-            if self.hovered.on_foundation:
-                for suit in self.all_suits:
-                    top_card = self.get_top_card_on_foundation(suit)
-                    if top_card:
-                        if top_card.pos[1] > self.hovered.pos[1]:
-                            positions_to_check.append(top_card)
-            positions_to_check = sorted(positions_to_check, key=lambda c: c.pos[1])
+            cards = [c for c in self.cards if c.col == self.hovered.col and c.pos[1] > self.hovered.pos[1]]
+            cards = sorted(cards, key=lambda c: c.pos[1])
+            if cards:
+                card = cards[0]
 
-        elif direction == 'left':
-            log('move_hover_with_no_selection', 'Attempting to move hover left')
-            # Check cards in cascades to the left
-            positions_to_check += [c for c in self.cards if c.col < self.hovered.col and len(c.tableau) == len(self.get_cards_below_card(c))]
-            # Check cards on cells
-            if self.hovered.col > 0:
-                positions_to_check += self.get_cards_on_cells()
-            positions_to_check = sorted(positions_to_check, key=lambda c: c.pos[0], reverse=True)
+        elif direction in ('left', 'right'):
+            # Create a list of bottom cards to navigate
+            bottom_cards = [self.get_last_card_in_cascade(n) for n in range(1, 9)]
+            bottom_cards = [c for c in bottom_cards if c]
+            bottom_cards += self.get_cards_on_cells()
+            foundation_cards = [self.get_top_card_on_foundation(suit) for suit in self.all_suits]
+            # Drop nulls
+            foundation_cards = [c for c in foundation_cards if c]
+            if foundation_cards:
+                # Get lowest (max Y) foundation card
+                bottom_cards.append(sorted(foundation_cards, key=lambda c: c.pos[1], reverse=True)[0])
+            # Step left/right
+            movement_value = 1 if direction == 'right' else -1
+            col = self.hovered.col + movement_value
+            while not card:
+                try:
+                    card = [c for c in bottom_cards if c.col == col][0]
+                except IndexError:
+                    col += movement_value
+                    # Wrap around left/right columns
+                    if col > 9:
+                        col = 0
+                    elif col < 0:
+                        col = 9
 
-        if positions_to_check:
-            log('move_hover_with_no_selection', f'positions to check: {", ".join([c.label for c in positions_to_check])}')
-            hover = self.find_first_card_with_valid_move(positions_to_check)
-            if hover:
-                self.hovered = hover
-                log('move_hover_with_no_selection', f'Hovered is now {self.hovered.label} in col {self.hovered.col}')
+        if card:
+            self.hovered = card
 
     def move_hover_with_selection(self, direction):
         """

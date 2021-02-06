@@ -155,7 +155,7 @@ def main():
             for n in range(len(board.hover_markers)):
                 screen.blit(board.hover_markers[n], (board.hover_marker_positions[n]))
 
-        # Draw card back 'deck' while dealing
+        # Draw cardback 'deck' while dealing
         if DEALING:
             if [c for c in board.cards if c.pos != c.target_pos and not c.animating]:
                 screen.blit(card_back, deck_pos)
@@ -176,6 +176,10 @@ if __name__ == '__main__':
 TODO
 ----
 
+- TODO: Overhaul hover-move system
+    Wrapping around gets really complicated with the auto-hover feature, e.g., what if I'm in col 2 and I hit left, but there's an empty base in col 1 and nothing in col 0? Does it wrap? What if there's no empty base in 1 but nothing there that has a valid move?
+    Because of these issues, we need to change to a system where the player can hover over any card they want. Move checking will only happen if they have selected a card, at which point L/R will just cycle through available destinations.
+    We should also add another feature, (activated with L/R shoulder buttons?) that moves the hover to a card with a valid move -- this way we could preserve the functionality currently in place for the D-Pad.
 - Wrap L/R hover moves around screen
 - After moving a card to a foundation, set hover back to the last card in the column the card came from (if it has a move; if not, the next closest one)
 - Update board.get_cascade_offset_from_card() when cascades get too long
