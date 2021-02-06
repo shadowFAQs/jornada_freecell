@@ -39,7 +39,6 @@ class Board(object):
             # log('find_first_card_with_valid_move', f'Searching for a move for {card.label}')
             # Card on cell
             if card.on_cell:
-                print(len(self.get_empty_bases()))
                 # Can move to empty base
                 if len(self.get_empty_bases()):
                     return card
@@ -356,6 +355,9 @@ class Board(object):
             # Check empty bases
             positions_to_check += [b for b in self.bases if b.vacant and b.col > self.hovered.col]
 
+            # Drop null returns from get_last_card_in_cascade (if
+            # column is empty)
+            positions_to_check = [p for p in positions_to_check if p]
             # Sort positions by column from low to high
             positions_to_check = sorted(positions_to_check, key=lambda p: p.col)
 

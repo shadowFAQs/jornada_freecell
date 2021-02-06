@@ -176,12 +176,10 @@ if __name__ == '__main__':
 TODO
 ----
 
-- Bug: Moving L/R with a selection while there is a vacant base causes crash?
+- Bug: Hover markers off position for bases
+- Bug: Moving a card to an empty base causes crash
 - Wrap L/R hover moves around screen
 - After moving a card to a foundation, set hover back to the last card in the column the card came from (if it has a move; if not, the next closest one)
-- Create & implement graphics for hovered cells
-- Create & implement graphics for hovered foundations
-- Create & implement graphics for hovered bases
 - Update board.get_cascade_offset_from_card() when cascades get too long
 - Menu
     - Show menu interface
@@ -189,8 +187,8 @@ TODO
     - New game
     - Statistics
 - Controller support
-    1. Selection graphics
-    2. Arrow / WASD input
+    1. Selection graphics - DONE
+    2. Arrow / WASD input - DONE
     3. Map controller input
 
 """
