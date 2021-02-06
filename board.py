@@ -62,11 +62,12 @@ class Board(object):
             elif card.on_foundation:
                 # Can move to free cell or empty base
                 if self.count_free_cells() or self.count_empty_bases():
-                    return card
+                    # Return top card from card's foundation
+                    return self.get_top_card_on_foundation(card.suit)
                 # Can move to bottom of cascade
                 for bottom_card in [self.get_last_card_in_cascade(n) for n in range(1, 9)]:
                     if bottom_card.color != card.color and bottom_card.value == card.value + 1:
-                        return card
+                        return self.get_top_card_on_foundation(card.suit)
 
             # Card at bottom of cascade
             elif card == self.get_last_card_in_cascade(index=card.col):
