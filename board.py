@@ -413,17 +413,17 @@ class Board(object):
             self.selected_card.move(pos=self.hovered.pos, col=9)
             self.hover_top_foundation_card(suit=self.hovered.suit)
 
-        # On card in foundation
-        elif self.hovered.on_foundation:
-            self.selected_card.on_foundation = True
-            self.selected_card.move(pos=self.hovered.pos, col=9)
-            self.hover_top_foundation_card(suit=self.hovered.suit)
-
         # On empty base (base.vacant property updated in
         # set_base_vacancy call below)
         elif self.hovered in self.bases:
             self.selected_card.move(pos=self.hovered.pos, col=self.hovered.col)
             self.hovered = self.get_last_card_in_cascade(self.hovered.col)
+
+        # On card in foundation
+        elif self.hovered.on_foundation:
+            self.selected_card.on_foundation = True
+            self.selected_card.move(pos=self.hovered.pos, col=9)
+            self.hover_top_foundation_card(suit=self.hovered.suit)
 
         # On bottom of cascade
         else:

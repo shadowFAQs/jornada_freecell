@@ -176,7 +176,6 @@ if __name__ == '__main__':
 TODO
 ----
 
-- Bug: Moving a card to an empty base causes crash
 - Wrap L/R hover moves around screen
 - After moving a card to a foundation, set hover back to the last card in the column the card came from (if it has a move; if not, the next closest one)
 - Update board.get_cascade_offset_from_card() when cascades get too long
