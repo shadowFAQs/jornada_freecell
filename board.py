@@ -19,12 +19,6 @@ class Board(object):
         for marker in self.hover_markers:
             marker.set_colorkey(transparent)
 
-    def count_empty_bases(self):
-        return len([b for b in self.bases if b.vacant])
-
-    def count_free_cells(self):
-        return len([c for c in self.cells if c.vacant])
-
     def deal(self, deal_event):
         to_deal = [c for c in self.cards if not c.animating and c.pos != c.target_pos]
         if to_deal:
@@ -45,8 +39,9 @@ class Board(object):
             # log('find_first_card_with_valid_move', f'Searching for a move for {card.label}')
             # Card on cell
             if card.on_cell:
+                print(len(self.get_empty_bases()))
                 # Can move to empty base
-                if self.count_empty_bases():
+                if len(self.get_empty_bases()):
                     return card
                 # Can move to foundation
                 foundation_card = self.get_top_card_on_foundation(suit=card.suit)
@@ -61,7 +56,7 @@ class Board(object):
             # Card on foundation
             elif card.on_foundation:
                 # Can move to free cell or empty base
-                if self.count_free_cells() or self.count_empty_bases():
+                if len(self.get_free_cells()) or len(self.get_empty_bases()):
                     # Return top card from card's foundation
                     return self.get_top_card_on_foundation(card.suit)
                 # Can move to bottom of cascade
@@ -72,7 +67,7 @@ class Board(object):
             # Card at bottom of cascade
             elif card == self.get_last_card_in_cascade(index=card.col):
                 # Can move to free cell or empty base
-                if self.count_free_cells() or self.count_empty_bases():
+                if len(self.get_free_cells()) or len(self.get_empty_bases()):
                     return card
                 # Can move to card on foundation
                 foundation_card = self.get_top_card_on_foundation(suit=card.suit)
@@ -94,7 +89,7 @@ class Board(object):
                 if card.tableau:
                     if (len(card.tableau) + 1) <= self.get_max_tableau_size():
                         # Can move to empty base
-                        if self.count_empty_bases():
+                        if len(self.get_empty_bases()):
                             # log('find_first_card_with_valid_move', f'Move found for {card.label}: Empty base')
                             return card
                         # Can move to bottom of another cascade
@@ -181,7 +176,7 @@ class Board(object):
         return sorted(cascade, key=lambda c:c.pos[1])[-1] if cascade else None
 
     def get_max_tableau_size(self):
-        return (5 - len([c for c in self.cards if c.on_cell])) * (self.count_empty_bases() + 1)
+        return (5 - len([c for c in self.cards if c.on_cell])) * (len(self.get_empty_bases()) + 1)
 
     def get_top_card_on_foundation(self, suit):
         cards = [c for c in self.cards if c.on_foundation and c.suit == suit]
@@ -422,7 +417,8 @@ class Board(object):
             self.selected_card.move(pos=self.hovered.pos, col=9)
             self.hover_top_foundation_card(suit=self.hovered.suit)
 
-        # On empty base
+        # On empty base (base.vacant property updated in
+        # set_base_vacancy call below)
         elif self.hovered in self.bases:
             self.selected_card.move(pos=self.hovered.pos, col=self.hovered.col)
             self.hovered = self.get_last_card_in_cascade(self.hovered.col)
@@ -434,6 +430,7 @@ class Board(object):
 
         self.selected_card = None
         self.reset_tableaux()
+        self.set_base_vacancy()
 
     def reset_tableaux(self):
         """Resets tableaux for all cards"""
@@ -447,6 +444,10 @@ class Board(object):
         self.set_hover_from_selected()
         self.set_hover_marker_positions()
         log('select_hovered', f'Hovered is now {self.hovered.label} in col {self.hovered.col}')
+
+    def set_base_vacancy(self):
+        for base in self.bases:
+            base.vacant = not bool(len([c for c in self.cards if c.col == base.col]))
 
     def set_cards_z_index(self):
         """
