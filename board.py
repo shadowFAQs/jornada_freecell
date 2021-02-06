@@ -91,7 +91,7 @@ class Board(object):
             else:
                 # log('find_first_card_with_valid_move', f'{card.label} in cascade but not at bottom')
                 if card.tableau:
-                    if len(card.tableau) <= self.get_max_tableau_size():
+                    if (len(card.tableau) + 1) <= self.get_max_tableau_size():
                         # Can move to empty base
                         if self.count_empty_bases():
                             # log('find_first_card_with_valid_move', f'Move found for {card.label}: Empty base')
@@ -137,7 +137,7 @@ class Board(object):
 
             # Empty base
             if position in self.bases:
-                if len(self.selected_card.tableau) < self.get_max_tableau_size():
+                if (len(self.selected_card.tableau) + 1) <= self.get_max_tableau_size():
                     return position
 
             # Same-suit card on foundation (suit check already done)
