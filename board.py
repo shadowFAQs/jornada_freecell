@@ -324,6 +324,10 @@ class Board(object):
             log('move_hover_with_selection', 'Attempting to move hover right')
             # Check bottom cards in cascades to the right
             positions_to_check = [self.get_last_card_in_cascade(n) for n in range(max(self.hovered.col, 1), 9)]
+            # Remove currently hovered position from potential positions
+            # to move hover to
+            if self.hovered in positions_to_check:
+                positions_to_check.pop(positions_to_check.index(self.hovered))
             # Check card on same-suit foundation
             if self.hovered.col < 9:
                 foundation_card = self.get_top_card_on_foundation(self.selected_card.suit)
@@ -344,6 +348,10 @@ class Board(object):
             log('move_hover_with_selection', 'Attempting to move hover left')
             # Check bottom cards in cascades to the left
             positions_to_check = [self.get_last_card_in_cascade(n) for n in range(1, self.hovered.col)]
+            # Remove currently hovered position from potential positions
+            # to move hover to
+            if self.hovered in positions_to_check:
+                positions_to_check.pop(positions_to_check.index(self.hovered))
             # Check empty cells
             positions_to_check += [c for c in self.cells if c.vacant]
             # Check empty bases
