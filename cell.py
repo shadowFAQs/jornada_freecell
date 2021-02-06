@@ -10,9 +10,9 @@ class Cell(object):
 
         if cell_type == 'base':
             # Anchor point for base 0 is (32, 6)
-            # Bases are 23px apart
+            # Bases are 22px apart
             self.label = f'base (col {col})'
-            self.pos = (32 + pos * 23, 6)
+            self.pos = (32 + pos * 22, 6)
             self.vacant = False
 
         elif cell_type == 'cell':
