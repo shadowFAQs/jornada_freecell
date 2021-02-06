@@ -255,9 +255,19 @@ class Board(object):
 
         if direction == 'up':
             log('move_hover_with_no_selection', 'Attempting to move hover up')
-            # Check cards above in current cascade
-            positions_to_check += [c for c in self.cards if c.col == self.hovered.col and c.pos[1] < self.hovered.pos[1] and len(c.tableau) == len(self.get_cards_below_card(c))]
-            # Check cards in other foundations above
+            # Check cards above in current cascade (or on cells)
+            positions_to_check = []
+            for card in self.cards:
+                if card.col == self.hovered.col and card.pos[1] < self.hovered.pos[1]:
+                    # If card is in a cascade, do a tableau check; if
+                    # it's on a cell, don't
+                    if card.on_cell:
+                        positions_to_check.append(card)
+                    else:
+                        if len(card.tableau) == len(self.get_cards_below_card(card)):
+                            positions_to_check.append(card)
+            # If hovering on a foundation card, check cards in other
+            # foundations above
             if self.hovered.on_foundation:
                 for suit in self.all_suits:
                     top_card = self.get_top_card_on_foundation(suit)
@@ -280,9 +290,19 @@ class Board(object):
 
         elif direction == 'down':
             log('move_hover_with_no_selection', 'Attempting to move hover down')
-            # Check cards below in current column
-            positions_to_check += [c for c in self.cards if c.col == self.hovered.col and c.pos[1] > self.hovered.pos[1] and len(c.tableau) == len(self.get_cards_below_card(c))]
-            # Check cards in other foundations below
+            # Check cards below in current cascade (or on cells)
+            positions_to_check = []
+            for card in self.cards:
+                if card.col == self.hovered.col and card.pos[1] > self.hovered.pos[1]:
+                    # If card is in a cascade, do a tableau check; if
+                    # it's on a cell, don't
+                    if card.on_cell:
+                        positions_to_check.append(card)
+                    else:
+                        if len(card.tableau) == len(self.get_cards_below_card(card)):
+                            positions_to_check.append(card)
+            # If hovering on a foundation card, check cards in other
+            # foundations below
             if self.hovered.on_foundation:
                 for suit in self.all_suits:
                     top_card = self.get_top_card_on_foundation(suit)

@@ -176,7 +176,6 @@ if __name__ == '__main__':
 TODO
 ----
 
-- Bug: Can't move up/down among cell cards with valid moves
 - Bug: Moving left with open base causes crash?
 - Wrap L/R hover moves around screen
 - After moving a card to a foundation, set hover back to the last card in the column the card came from (if it has a move; if not, the next closest one)
