@@ -176,7 +176,8 @@ if __name__ == '__main__':
 TODO
 ----
 
-- TODO: Overhaul hover-move system
+- TODO: Next step - Handle selection of cards with and without valid moves
+- TODO: Overhaul hover-move system (in progress)
     Wrapping around gets really complicated with the auto-hover feature, e.g., what if I'm in col 2 and I hit left, but there's an empty base in col 1 and nothing in col 0? Does it wrap? What if there's no empty base in 1 but nothing there that has a valid move?
     Because of these issues, we need to change to a system where the player can hover over any card they want. Move checking will only happen if they have selected a card, at which point L/R will just cycle through available destinations.
     We should also add another feature, (activated with L/R shoulder buttons?) that moves the hover to a card with a valid move -- this way we could preserve the functionality currently in place for the D-Pad.
